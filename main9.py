@@ -28,7 +28,7 @@ class Example(QWidget):
         self.setGeometry(300, 300, 700, 800)
         self.setWindowTitle('Фигурное рисование')
 
-        #self.table2()
+        # self.table2()
 
         self.button_1 = QPushButton(self)
         self.button_1.move(20, 40)
@@ -51,7 +51,7 @@ class Example(QWidget):
         self.desk.setText("ДОСКА ДЛЯ РИСОВАНИЯ:")
         self.desk.move(400, 170)
 
-        #для квадрата
+        # для квадрата
         self.sq = QLabel(self)
         self.sq.setText("КВАДРАТ")
         self.sq.move(350, 10)
@@ -140,7 +140,7 @@ class Example(QWidget):
         self.buttonsq.hide()
         self.buttonsq2.hide()
 
-        #ДЛЯ КРУГА
+        # ДЛЯ КРУГА
         self.ci = QLabel(self)
         self.ci.setText("КРУГ")
         self.ci.move(350, 10)
@@ -229,7 +229,7 @@ class Example(QWidget):
         self.buttonci.hide()
         self.buttonci2.hide()
 
-        #для прямоугольника
+        # для прямоугольника
         self.re = QLabel(self)
         self.re.setText("ПРЯМОУГОЛЬНИК")
         self.re.move(350, 10)
@@ -328,7 +328,7 @@ class Example(QWidget):
         self.buttonre.hide()
         self.buttonre2.hide()
 
-        #для треугольника
+        # для треугольника
         self.tr = QLabel(self)
         self.tr.setText("ТРЕУГОЛЬНИК")
         self.tr.move(350, 10)
@@ -1037,7 +1037,8 @@ class Example(QWidget):
             if self.er == 1:
                 self.error.setText("СООБЩЕНИЕ ОБ ОШИБКЕ: \nне все данные заполнены")
             elif self.er == 3:
-                self.error.setText("СООБЩЕНИЕ ОБ ОШИБКЕ: \nразмер фигуры не может иметь \nотрицательное значение или \nравняться нулю")
+                self.error.setText(
+                    "СООБЩЕНИЕ ОБ ОШИБКЕ: \nразмер фигуры не может иметь \nотрицательное значение или \nравняться нулю")
             elif self.er == 4:
                 self.error.setText("СООБЩЕНИЕ ОБ ОШИБКЕ: \nr, g, b должны быть в диапозоне \nот 0 до 255")
             elif self.er == 5:
@@ -1082,7 +1083,8 @@ class Example(QWidget):
             if self.er == 1:
                 self.error.setText("СООБЩЕНИЕ ОБ ОШИБКЕ: \nне все данные заполнены")
             elif self.er == 3:
-                self.error.setText("СООБЩЕНИЕ ОБ ОШИБКЕ: \nразмер фигуры не может иметь \nотрицательное значение или \nравняться нулю")
+                self.error.setText(
+                    "СООБЩЕНИЕ ОБ ОШИБКЕ: \nразмер фигуры не может иметь \nотрицательное значение или \nравняться нулю")
             elif self.er == 4:
                 self.error.setText("СООБЩЕНИЕ ОБ ОШИБКЕ: \nr, g, b должны быть в диапозоне \nот 0 до 255")
             elif self.er == 5:
@@ -1128,7 +1130,8 @@ class Example(QWidget):
             if self.er == 1:
                 self.error.setText("СООБЩЕНИЕ ОБ ОШИБКЕ: \nне все данные заполнены")
             elif self.er == 3:
-                self.error.setText("СООБЩЕНИЕ ОБ ОШИБКЕ: \nразмер фигуры не может иметь \nотрицательное значение или \nравняться нулю")
+                self.error.setText(
+                    "СООБЩЕНИЕ ОБ ОШИБКЕ: \nразмер фигуры не может иметь \nотрицательное значение или \nравняться нулю")
             elif self.er == 4:
                 self.error.setText("СООБЩЕНИЕ ОБ ОШИБКЕ: \nr, g, b должны быть в диапозоне \nот 0 до 255")
             elif self.er == 5:
@@ -1172,7 +1175,8 @@ class Example(QWidget):
             if self.er == 1:
                 self.error.setText("СООБЩЕНИЕ ОБ ОШИБКЕ: \nне все данные заполнены")
             elif self.er == 3:
-                self.error.setText("СООБЩЕНИЕ ОБ ОШИБКЕ: \nразмер фигуры не может иметь \nотрицательное значение или \nравняться нулю")
+                self.error.setText(
+                    "СООБЩЕНИЕ ОБ ОШИБКЕ: \nразмер фигуры не может иметь \nотрицательное значение или \nравняться нулю")
             elif self.er == 4:
                 self.error.setText("СООБЩЕНИЕ ОБ ОШИБКЕ: \nr, g, b должны быть в диапозоне \nот 0 до 255")
             elif self.er == 5:
@@ -1197,7 +1201,8 @@ class Example(QWidget):
         try:
             a = "1"
             self.er = 0
-            if (self.size2po.text() == "" or self.n2po.text() == "" or self.r2po.text() == "" or self.g2po.text() == "" or
+            if (
+                    self.size2po.text() == "" or self.n2po.text() == "" or self.r2po.text() == "" or self.g2po.text() == "" or
                     self.b2po.text() == "" or self.x2po.text() == "" or self.y2po.text() == ""):
                 self.er = 1
                 a += "a"
@@ -1222,7 +1227,8 @@ class Example(QWidget):
             elif self.er == 2:
                 self.error.setText("СООБЩЕНИЕ ОБ ОШИБКЕ: \nкол-во сторон должно быть >= 3")
             elif self.er == 3:
-                self.error.setText("СООБЩЕНИЕ ОБ ОШИБКЕ: \nразмер фигуры не может иметь \nотрицательное значение или \nравняться нулю")
+                self.error.setText(
+                    "СООБЩЕНИЕ ОБ ОШИБКЕ: \nразмер фигуры не может иметь \nотрицательное значение или \nравняться нулю")
             elif self.er == 4:
                 self.error.setText("СООБЩЕНИЕ ОБ ОШИБКЕ: \nr, g, b должны быть в диапозоне \nот 0 до 255")
             elif self.er == 5:
@@ -1251,8 +1257,8 @@ class Example(QWidget):
         if self.f2:
             self.clear2(qp)
             self.f2 = False
-        #if self.f3:
-            #self.table2()
+        # if self.f3:
+        # self.table2()
         if self.flag:
             if self.figure == "квадрат":
                 self.drawsq1(qp)
@@ -1305,9 +1311,9 @@ class Example(QWidget):
                     points = QPolygon(nodes2)
                     qp.setBrush(QColor(int(elem[3]), int(elem[4]), int(elem[5])))
                     qp.drawPolygon(points)
-        #else:
-            #qp.setBrush(QColor(255, 255, 255))
-            #qp.drawRect(0, 200, 700, 800)
+        # else:
+        # qp.setBrush(QColor(255, 255, 255))
+        # qp.drawRect(0, 200, 700, 800)
 
     def drawsq1(self, qp):
         if self.history:
@@ -1510,14 +1516,14 @@ class Example(QWidget):
                       rad * sin(i * 2 * pi / 3 + pi / 2))
                      for i in range(3)]
             nodes2 = [QPoint(int(node[0] + x),
-                       int(y - node[1] + s / sqrt(2 * (1 - cos(2 * pi / 3)))) + 200) for node in nodes]
+                             int(y - node[1] + s / sqrt(2 * (1 - cos(2 * pi / 3)))) + 200) for node in nodes]
             points = QPolygon(nodes2)
             qp.setBrush(QColor(R, G, B))
             qp.drawPolygon(points)
         self.flag = False
         self.history.append(["треугольник", s, R, G, B, x, y])
 
-    def drawpo1(self,qp):
+    def drawpo1(self, qp):
         if self.history:
             for elem in self.history:
                 if elem[0] == "квадрат":
@@ -1569,7 +1575,7 @@ class Example(QWidget):
                       rad * sin(i * 2 * pi / n + pi / 2))
                      for i in range(n)]
             nodes2 = [QPoint(int(node[0] + x),
-                       int(y - node[1] + s / sqrt(2 * (1 - cos(2 * pi / n)))) + 200) for node in nodes]
+                             int(y - node[1] + s / sqrt(2 * (1 - cos(2 * pi / n)))) + 200) for node in nodes]
             points = QPolygon(nodes2)
             qp.setBrush(QColor(R, G, B))
             qp.drawPolygon(points)
@@ -1594,13 +1600,12 @@ class Example(QWidget):
         cur = con.cursor()
         cur.execute(f"""insert into Figures(figure, size, R, G, B, x, y) VALUES(?, ?, ?, ?, ?, ?, ?)""",
                     ('квадрат', int(self.size2sq.text()), int(self.r2sq.text()), int(self.g2sq.text()),
-                    int(self.b2sq.text()), int(self.x2sq.text()), int(self.y2sq.text())))
+                     int(self.b2sq.text()), int(self.x2sq.text()), int(self.y2sq.text())))
         con.commit()
         cur.close()
         con.close()
 
-        #self.table2()
-
+        # self.table2()
 
     def saveci(self):
         col = ["фигура", "размер", "цвет", "координаты"]
@@ -1625,7 +1630,7 @@ class Example(QWidget):
         cur.close()
         con.close()
 
-        #self.table2()
+        # self.table2()
 
     def savere(self):
         col = ["фигура", "размер", "цвет", "координаты"]
@@ -1651,7 +1656,7 @@ class Example(QWidget):
         cur.close()
         con.close()
 
-        #self.table2()
+        # self.table2()
 
     def savetr(self):
         col = ["фигура", "размер", "цвет", "координаты"]
@@ -1676,7 +1681,7 @@ class Example(QWidget):
         cur.close()
         con.close()
 
-        #self.table2()
+        # self.table2()
 
     def savepo(self):
         col = ["фигура", "размер", "цвет", "координаты"]
@@ -1695,31 +1700,32 @@ class Example(QWidget):
         con = sqlite3.connect("figure.db")
         cur = con.cursor()
         cur.execute(f"""insert into Figures(figure, size, R, G, B, x, y) VALUES(?, ?, ?, ?, ?, ?, ?)""",
-                    (f"{int(self.n2po.text())}-угольник", int(self.size2po.text()), int(self.r2po.text()), int(self.g2po.text()),
+                    (f"{int(self.n2po.text())}-угольник", int(self.size2po.text()), int(self.r2po.text()),
+                     int(self.g2po.text()),
                      int(self.b2po.text()), int(self.x2po.text()), int(self.y2po.text())))
         con.commit()
         cur.close()
         con.close()
 
-        #self.table2()
+        # self.table2()
 
-    #def table2(self):
-        #self.table = QTableWidget(self)
-        #self.table.resize(480, 800)
-        #self.table.move(701, 0)
-        #self.table_list = []
-        #self.table.setColumnCount(7)
-        #con = sqlite3.connect("figure.db")
-        #cur = con.cursor()
-        #result = cur.execute(f"""SELECT figure, size, R, G, B, x, y FROM Figures""").fetchall()
-        #for i, elem in enumerate(result):
-            #self.table.setRowCount(
-                #self.table.rowCount() + 1)
-            #for j, el in enumerate(elem):
-               #self.table.setItem(i, j, QTableWidgetItem(el))
-            #self.table.setItem(i, 2, QTableWidgetItem(''))
-        #self.table.resizeColumnsToContents()
-        #self.table.setHorizontalHeaderLabels(['figure', 'size', 'R', 'G', 'B', 'x', 'y'])
+    # def table2(self):
+    # self.table = QTableWidget(self)
+    # self.table.resize(480, 800)
+    # self.table.move(701, 0)
+    # self.table_list = []
+    # self.table.setColumnCount(7)
+    # con = sqlite3.connect("figure.db")
+    # cur = con.cursor()
+    # result = cur.execute(f"""SELECT figure, size, R, G, B, x, y FROM Figures""").fetchall()
+    # for i, elem in enumerate(result):
+    # self.table.setRowCount(
+    # self.table.rowCount() + 1)
+    # for j, el in enumerate(elem):
+    # self.table.setItem(i, j, QTableWidgetItem(el))
+    # self.table.setItem(i, 2, QTableWidgetItem(''))
+    # self.table.resizeColumnsToContents()
+    # self.table.setHorizontalHeaderLabels(['figure', 'size', 'R', 'G', 'B', 'x', 'y'])
 
 
 if __name__ == '__main__':
