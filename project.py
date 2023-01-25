@@ -89,10 +89,10 @@ class Player(pygame.sprite.Sprite):
             if self.rect.y > len(map1) * size_x:
                 self.lose = True
                 print("you've lost")
-        #if self.lose:
-            #f = pygame.font.Font(None, 70)
-            #text = f.render("you've lost", 1, "red")
-            #screen.blit(text, (300, 250))
+        if self.lose:
+            f = pygame.font.Font(None, 70)
+            text = f.render("you've lost", 1, "red")
+            screen.blit(text, (300, 250))
 
 
 class Level:
@@ -117,18 +117,25 @@ class Level:
                     money = Money((size_x * ind_c, size_x * ind_r))
                     self.moneys.add(money)
 
+
     def camera_level(self):
         player = self.player.sprite
         playerx = player.rect.centerx
         playery = player.rect.centery
         vectorx = player.vector.x
         vectory = player.vector.y
-        if playerx < 200 and vectorx < 0:
+        if playerx <= width / 2 and vectorx < 0:
             self.camera = 5
             player.v = 0
-        elif playerx > 600 and vectorx > 0:
+        elif playerx >= width / 2 and vectorx > 0:
             self.camera = -5
             player.v = 0
+        #elif playery > height / 2 and vectory > 0:
+            #self.camera = 5
+            #player.v = 0
+        #elif playery < height / 2 and vectory < 0:
+            #self.camera = -5
+            #player.v = 0
         else:
             self.camera = 0
             player.v = 5
@@ -155,11 +162,27 @@ class Level:
                     player.rect.top = platform.rect.bottom
                     player.vector.y = 0
 
+
+    def get_money(self):
+        global count_money
+        player = self.player.sprite
+        for money in self.moneys:
+            if pygame.sprite.collide_rect(money, player):
+                money.kill()
+                count_money += 1
+                print(count_money)
+        f = pygame.font.Font(None, 40)
+        text = f.render(f"money: {str(count_money)}", 1, "black")
+        screen.blit(text, (20, 30))
+
+
+
     def run(self):
         self.platforms.update(self.camera)
         self.platforms.draw(self.surface)
         self.moneys.update(self.camera)
         self.moneys.draw(self.surface)
+        self.get_money()
         self.camera_level()
         self.player.update()
         self.vertical()
@@ -168,6 +191,7 @@ class Level:
 
 
 level = Level(map1, screen)
+count_money = 0
 
 running = True
 while running:
@@ -179,4 +203,6 @@ while running:
     pygame.display.flip()
     clock.tick(60)
 pygame.quit()
+
+
 
