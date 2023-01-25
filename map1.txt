@@ -1,21 +1,11 @@
 
-
-
-
-
-
-
                                          M
         M             M              XXXXXXXXXX
  XX    XXX            XX
 MXX P                         XXXXXX
 XXXXX        XXX         XX           XXXXX     M
- XXXX       XX                    M XXX       XXXXX
- XX    X  XXXX    XX  XX          XXX
+  XXXX       XX                    M XXX       XXXXX
+  XX    X  XXXX    XX  XX          XXX
        X  XXXX M  XX  XXX                XXXX
   M XXXX  XXXXXX  XX  XXXX  M XX         XX    M
-XXXXXXXX  XXXX    XX  XXXX  XXXXX        XX   XXXXX
-XXXXXXXX  XXXX    XX  XXXX  XXXXX        XX   XXXXX
-XXXXXXXX  XXXX    XX  XXXX  XXXXX        XX   XXXXX
-XXXXXXXX  XXXX    XX  XXXX  XXXXX        XX   XXXXX
 XXXXXXXX  XXXX    XX  XXXX  XXXXX        XX   XXXXX
