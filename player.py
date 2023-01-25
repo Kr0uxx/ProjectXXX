@@ -1,6 +1,6 @@
 import pygame
 
-map1 = open("graphics/map1.txt").readlines()
+map1 = open("maps/map1.txt").readlines()
 size_x = 50
 
 
@@ -12,7 +12,7 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft=pos)
 
         self.vector = pygame.math.Vector2(0, 0)
-        self.v = 5
+        self.v = 10
         # характеристики прыжка
         self.gravity = 0.3
         self.v_jump = -5

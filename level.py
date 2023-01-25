@@ -1,7 +1,7 @@
 import pygame
 from player import Player
 
-map1 = open("graphics/map1.txt").readlines()
+map1 = open("maps/map1.txt").readlines()
 size_x = 50
 
 
