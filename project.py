@@ -1,14 +1,14 @@
 import pygame
-import sys
 from level import Level
 from display import Display
 from menu import Menu
+from start_screen import StartScreen
 
 pygame.init()
 running = True
 
 # 4 состояния: game - в игре, start - на начальном экране, menu - в меню и dead - на экране смерти
-status = 'game'
+status = 'start'
 
 # карта для уровня
 map1 = open("maps/map1.txt").readlines()
@@ -39,18 +39,26 @@ def resume_game():
 
 
 def go_start_screen():
-    pass
+    global status
+    status = 'start'
 
 
 def open_settings():
     pass
 
 
+# меню
 menu = Menu(screen)
 menu.append_option('Resume', resume_game)
 menu.append_option('Settings', open_settings)
 menu.append_option('Start Screen', go_start_screen)
 menu.append_option('Quit', quit_game)
+
+# начальный экран
+start_screen = StartScreen(screen)
+start_screen.append_option('Start', resume_game)
+start_screen.append_option('Settings', open_settings)
+start_screen.append_option('Quit', quit_game)
 
 # графика
 bg1 = pygame.image.load("graphics\\background_layer_1.png")
@@ -68,12 +76,19 @@ while running:
             if status == 'game':
                 if event.key == pygame.K_ESCAPE:
                     status = 'menu'
+            elif status == 'start':
+                if event.key == pygame.K_w:
+                    start_screen.switch(-1)
+                elif event.key == pygame.K_s:
+                    start_screen.switch(1)
+                elif event.key == pygame.K_RETURN:
+                    start_screen.select()
             elif status == 'menu':
                 if event.key == pygame.K_w:
                     menu.switch(-1)
                 elif event.key == pygame.K_s:
                     menu.switch(1)
-                elif event.key == pygame.K_SPACE:
+                elif event.key == pygame.K_RETURN:
                     menu.select()
     if status == 'game':
         screen.blit(bg1, (0, 0))
@@ -81,6 +96,8 @@ while running:
         screen.blit(bg3, (0, 0))
         level.run()
         display.run()
+    elif status == 'start':
+        start_screen.run(50, 350, 165)
     elif status == 'menu':
         menu.run(50, 350, 165)
     pygame.display.flip()
