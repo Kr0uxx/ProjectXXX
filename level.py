@@ -3,6 +3,7 @@ from player import Player
 
 map1 = open("maps/map1.txt").readlines()
 size_x = 50
+width = 1000
 
 
 class Money(pygame.sprite.Sprite):
@@ -30,10 +31,11 @@ class Platform(pygame.sprite.Sprite):
 
 
 class Level:
-    def __init__(self, map, surface):
-        self.surface = surface
+    def __init__(self, map, screen):
+        self.screen = screen
         self.read(map)
         self.camera = 0
+        self.money = 0
 
     def read(self, map):
         self.platforms = pygame.sprite.Group()
@@ -57,10 +59,10 @@ class Level:
         playery = player.rect.centery
         vectorx = player.vector.x
         vectory = player.vector.y
-        if playerx < 200 and vectorx < 0:
+        if playerx <= width / 2 and vectorx < 0:
             self.camera = 5
             player.v = 0
-        elif playerx > 600 and vectorx > 0:
+        elif playerx > width / 2 and vectorx > 0:
             self.camera = -5
             player.v = 0
         else:
@@ -89,13 +91,28 @@ class Level:
                     player.rect.top = platform.rect.bottom
                     player.vector.y = 0
 
+    def get_money(self):
+        player = self.player.sprite
+        for money in self.moneys:
+            if pygame.sprite.collide_rect(money, player):
+                money.kill()
+                self.money += 1
+                print(self.money)
+        f = pygame.font.Font(None, 40)
+        text = f.render(f"money: {str(self.money)}", True, "black")
+        self.screen.blit(text, (20, 130))
+
     def run(self):
         self.platforms.update(self.camera)
-        self.platforms.draw(self.surface)
+        self.platforms.draw(self.screen)
         self.moneys.update(self.camera)
-        self.moneys.draw(self.surface)
+        self.moneys.draw(self.screen)
         self.camera_level()
         self.player.update()
         self.vertical()
         self.horizontal()
-        self.player.draw(self.surface)
+        self.player.draw(self.screen)
+        self.get_money()
+
+
+
