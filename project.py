@@ -3,30 +3,46 @@ from level import Level
 from display import Display
 from menu import Menu
 from start_screen import StartScreen
+from dead_screen import DeadScreen
+from player import PlayerStats
 
 pygame.init()
 running = True
 
-# 4 состояния: game - в игре, start - на начальном экране, menu - в меню и dead - на экране смерти
+# 4 состояния: game - в игре, start - на начальном экране, menu - в меню и death - на экране смерти
 status = 'start'
 
 # карта для уровня
 map1 = open("maps/map1.txt").readlines()
 active_map = map1
 
+# музыка
+main_theme = 'music\\main theme.mp3'
+start_screen_theme = 'music\\start screen theme.mp3'
+
+
+def music(music_name, volume=0.5, loops=-1):
+    pygame.mixer.music.load(music_name)
+    pygame.mixer.music.set_volume(volume)
+    pygame.mixer.music.play(loops=loops)
+
+
 size_x = 50
 width = 1000
 height = len(map1) * size_x
+damage = 5
 
 size = width, height
 screen = pygame.display.set_mode(size)
 clock = pygame.time.Clock()
 
 level = Level(map1, screen)
-display = Display(screen, width, height, 100, 100)
+
+player_stats = PlayerStats(status, 1000, 1000, damage)
+display = Display(screen, width, player_stats.hp, player_stats.mana)
 
 
-# меню:
+# f меню:
 
 def quit_game():
     global running
@@ -34,13 +50,11 @@ def quit_game():
 
 
 def resume_game():
-    global status
-    status = 'game'
+    player_stats.status = 'game'
 
 
 def go_start_screen():
-    global status
-    status = 'start'
+    player_stats.status = 'start'
 
 
 def open_settings():
@@ -60,6 +74,9 @@ start_screen.append_option('Start', resume_game)
 start_screen.append_option('Settings', open_settings)
 start_screen.append_option('Quit', quit_game)
 
+# экран смерти
+dead_screen = DeadScreen(screen)
+
 # графика
 bg1 = pygame.image.load("graphics\\background_layer_1.png")
 bg1 = pygame.transform.scale(bg1, (1280, 1080))
@@ -68,37 +85,45 @@ bg2 = pygame.transform.scale(bg2, (1280, 1080))
 bg3 = pygame.image.load("graphics\\background_layer_3.png")
 bg3 = pygame.transform.scale(bg3, (1280, 1080))
 
+pygame.mixer.music.load(main_theme)
+pygame.mixer.music.play()
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
         if event.type == pygame.KEYDOWN:
-            if status == 'game':
+            if player_stats.status == 'game':
                 if event.key == pygame.K_ESCAPE:
-                    status = 'menu'
-            elif status == 'start':
+                    player_stats.status = 'menu'
+            elif player_stats.status == 'start':
                 if event.key == pygame.K_w:
                     start_screen.switch(-1)
                 elif event.key == pygame.K_s:
                     start_screen.switch(1)
                 elif event.key == pygame.K_RETURN:
                     start_screen.select()
-            elif status == 'menu':
+            elif player_stats.status == 'menu':
                 if event.key == pygame.K_w:
                     menu.switch(-1)
                 elif event.key == pygame.K_s:
                     menu.switch(1)
                 elif event.key == pygame.K_RETURN:
                     menu.select()
-    if status == 'game':
+            if event.key == pygame.K_y:
+                player_stats.get_damage(10)
+                display.hp_subtraction(10)
+    if player_stats.status == 'death':
+        dead_screen.run()
+    elif player_stats.status == 'game':
         screen.blit(bg1, (0, 0))
         screen.blit(bg2, (0, 0))
         screen.blit(bg3, (0, 0))
         level.run()
         display.run()
-    elif status == 'start':
+    elif player_stats.status == 'start':
+        pygame.mixer.music.load(main_theme)
         start_screen.run(50, 350, 165)
-    elif status == 'menu':
+    elif player_stats.status == 'menu':
         menu.run(50, 350, 165)
     pygame.display.flip()
     clock.tick(144)

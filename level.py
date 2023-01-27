@@ -4,6 +4,9 @@ from player import Player
 map1 = open("maps/map1.txt").readlines()
 size_x = 50
 width = 1000
+status = 'start'
+hp = 100
+damage = 5
 
 
 class Money(pygame.sprite.Sprite):
@@ -92,14 +95,15 @@ class Level:
                     player.vector.y = 0
 
     def get_money(self):
+
         player = self.player.sprite
         for money in self.moneys:
             if pygame.sprite.collide_rect(money, player):
+                pygame.mixer.Sound('music\\sounds\\coin.wav').play()
                 money.kill()
                 self.money += 1
-                print(self.money)
         f = pygame.font.Font(None, 40)
-        text = f.render(f"money: {str(self.money)}", True, "black")
+        text = f.render(f"money: {str(self.money)}", True, (0, 0, 0))
         self.screen.blit(text, (20, 130))
 
     def run(self):
@@ -113,6 +117,3 @@ class Level:
         self.horizontal()
         self.player.draw(self.screen)
         self.get_money()
-
-
-

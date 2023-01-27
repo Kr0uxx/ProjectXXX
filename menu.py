@@ -22,7 +22,7 @@ class Menu:
         self._current_option_index = max(0, min(self._current_option_index + direction, len(self._options) - 1))
 
     def select(self):
-        # тут будет звук селекта
+        pygame.mixer.Sound('music\\sounds\\select.mp3').play()
         self._callbacks[self._current_option_index]()
 
     def run(self, x, y, option_y_padding):

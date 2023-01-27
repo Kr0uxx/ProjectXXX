@@ -1,7 +1,12 @@
 import pygame
+from dead_screen import DeadScreen
 
 map1 = open("maps/map1.txt").readlines()
 size_x = 50
+width = 1000
+height = len(map1) * size_x
+size = width, height
+screen = pygame.display.set_mode(size)
 
 
 class Player(pygame.sprite.Sprite):
@@ -16,8 +21,6 @@ class Player(pygame.sprite.Sprite):
         # характеристики прыжка
         self.gravity = 0.3
         self.v_jump = -5
-        self.hp = 0
-        self.lose = False
 
     def get_key(self):
         keys = pygame.key.get_pressed()
@@ -27,7 +30,6 @@ class Player(pygame.sprite.Sprite):
             self.vector.x = -1
         else:
             self.vector.x = 0
-
         if keys[pygame.K_SPACE]:
             self.jump()
 
@@ -40,11 +42,20 @@ class Player(pygame.sprite.Sprite):
 
     def update(self):
         self.get_key()
-        if not self.lose:
-            if self.rect.y > len(map1) * size_x:
-                self.lose = True
-                print("you've lost")
-        # if self.lose:
-        # f = pygame.font.Font(None, 70)
-        # text = f.render("you've lost", 1, "red")
-        # screen.blit(text, (300, 250))
+
+
+class PlayerStats:
+    def __init__(self, status, hp, mana,  damage):
+        self.status = status
+        self.hp = hp
+        self.mana = mana
+        self.damage = damage
+
+    def get_damage(self, damage):
+        if (self.hp <= damage or self.hp < 1) and self.status != 'death':
+            self.status = 'death'
+            pygame.mixer.Sound('music\\sounds\\death music.mp3').play()
+        elif self.hp > 0:
+            self.hp -= damage
+
+

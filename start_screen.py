@@ -22,7 +22,8 @@ class StartScreen:
         self._current_option_index = max(0, min(self._current_option_index + direction, len(self._options) - 1))
 
     def select(self):
-        # тут будет звук селекта
+        pygame.mixer.music.load('music\\main theme.mp3')
+        pygame.mixer.music.play()
         self._callbacks[self._current_option_index]()
 
     def run(self, x, y, option_y_padding):
