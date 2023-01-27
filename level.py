@@ -1,5 +1,6 @@
 import pygame
 from player import Player
+from mob import Mob
 
 map1 = open("maps/map1.txt").readlines()
 size_x = 50
@@ -34,17 +35,18 @@ class Platform(pygame.sprite.Sprite):
 
 
 class Level:
-    def __init__(self, map, screen):
+    def __init__(self, map2, screen):
         self.screen = screen
-        self.read(map)
+        self.read(map2)
         self.camera = 0
         self.money = 0
 
-    def read(self, map):
+    def read(self, map2):
         self.platforms = pygame.sprite.Group()
         self.moneys = pygame.sprite.Group()
         self.player = pygame.sprite.GroupSingle()
-        for ind_r, r in enumerate(map):
+        self.mobs = pygame.sprite.Group()
+        for ind_r, r in enumerate(map2):
             for ind_c, c in enumerate(r):
                 if c == "X":
                     platform = Platform((size_x * ind_c, size_x * ind_r), size_x)
@@ -55,6 +57,9 @@ class Level:
                 elif c == "M":
                     money = Money((size_x * ind_c, size_x * ind_r))
                     self.moneys.add(money)
+                elif c == 'E':
+                    enemy = Mob((size_x * ind_c, size_x * ind_r))
+                    self.mobs.add(enemy)
 
     def camera_level(self):
         player = self.player.sprite
@@ -117,3 +122,5 @@ class Level:
         self.horizontal()
         self.player.draw(self.screen)
         self.get_money()
+        self.mobs.update(self.camera)
+        self.mobs.draw(self.screen)

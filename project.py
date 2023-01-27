@@ -85,8 +85,6 @@ bg2 = pygame.transform.scale(bg2, (1280, 1080))
 bg3 = pygame.image.load("graphics\\background_layer_3.png")
 bg3 = pygame.transform.scale(bg3, (1280, 1080))
 
-pygame.mixer.music.load(main_theme)
-pygame.mixer.music.play()
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
