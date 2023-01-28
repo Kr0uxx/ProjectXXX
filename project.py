@@ -5,12 +5,13 @@ from menu import Menu
 from start_screen import StartScreen
 from dead_screen import DeadScreen
 from player import PlayerStats
+from dialogs import dialogs
 
 pygame.init()
 running = True
 
-# 4 состояния: game - в игре, start - на начальном экране, menu - в меню и death - на экране смерти
-status = 'start'
+# 5 состояний: game - в игре, start - на начальном экране, menu - в меню, death - на экране смерти, dialog - диалог
+status = 'dialog'
 
 # карта для уровня
 map1 = open("maps/map1.txt").readlines()
@@ -123,6 +124,8 @@ while running:
         start_screen.run(50, 350, 165)
     elif player_stats.status == 'menu':
         menu.run(50, 350, 165)
+    elif player_stats.status == 'dialog':
+        dialogs(screen, 'dialogs\\dialog1')
     pygame.display.flip()
     clock.tick(144)
 pygame.quit()

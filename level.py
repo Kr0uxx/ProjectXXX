@@ -100,7 +100,6 @@ class Level:
                     player.vector.y = 0
 
     def get_money(self):
-
         player = self.player.sprite
         for money in self.moneys:
             if pygame.sprite.collide_rect(money, player):

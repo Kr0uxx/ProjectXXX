@@ -14,7 +14,7 @@ class StartScreen:
         self.image.fill('black')
 
     def append_option(self, option, callback):
-        self._options.append(pygame.font.SysFont('arial', 140).render(option, True, (255, 255, 255)))
+        self._options.append(pygame.font.Font('dialogs\\fonts\\erin.ttf', 140).render(option, True, (255, 255, 255)))
         self._callbacks.append(callback)
 
     def switch(self, direction):
