@@ -1,4 +1,5 @@
 import pygame
+import time
 from level import Level
 from display import Display
 from menu import Menu
@@ -11,7 +12,7 @@ pygame.init()
 running = True
 
 # 5 состояний: game - в игре, start - на начальном экране, menu - в меню, death - на экране смерти, dialog - диалог
-status = 'dialog'
+status = 'start'
 
 # карта для уровня
 map1 = open("maps/map1.txt").readlines()
@@ -28,6 +29,7 @@ def music(music_name, volume=0.5, loops=-1):
     pygame.mixer.music.play(loops=loops)
 
 
+music(start_screen_theme)
 size_x = 50
 width = 1000
 height = len(map1) * size_x
@@ -51,6 +53,7 @@ def quit_game():
 
 
 def resume_game():
+    music(main_theme)
     player_stats.status = 'game'
 
 
@@ -80,12 +83,11 @@ dead_screen = DeadScreen(screen)
 
 # графика
 bg1 = pygame.image.load("graphics\\background_layer_1.png")
-bg1 = pygame.transform.scale(bg1, (1280, 1080))
+bg1 = pygame.transform.scale(bg1, (1000, 1080))
 bg2 = pygame.image.load("graphics\\background_layer_2.png")
-bg2 = pygame.transform.scale(bg2, (1280, 1080))
+bg2 = pygame.transform.scale(bg2, (1000, 1080))
 bg3 = pygame.image.load("graphics\\background_layer_3.png")
-bg3 = pygame.transform.scale(bg3, (1280, 1080))
-
+bg3 = pygame.transform.scale(bg3, (1000, 1080))
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -111,7 +113,10 @@ while running:
             if event.key == pygame.K_y:
                 player_stats.get_damage(10)
                 display.hp_subtraction(10)
+            if event.key == pygame.K_e:
+                player_stats.status = 'dialog'
     if player_stats.status == 'death':
+        pygame.mixer.music.stop()
         dead_screen.run()
     elif player_stats.status == 'game':
         screen.blit(bg1, (0, 0))
@@ -120,12 +125,13 @@ while running:
         level.run()
         display.run()
     elif player_stats.status == 'start':
-        pygame.mixer.music.load(main_theme)
         start_screen.run(50, 350, 165)
     elif player_stats.status == 'menu':
         menu.run(50, 350, 165)
     elif player_stats.status == 'dialog':
-        dialogs(screen, 'dialogs\\dialog1')
+        dialogs(screen, 'dialogs\\dialog001\\dialog1')
+        time.sleep(2)
+        player_stats.status = 'game'
     pygame.display.flip()
     clock.tick(144)
 pygame.quit()

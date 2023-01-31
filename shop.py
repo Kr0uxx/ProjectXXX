@@ -1,9 +1,14 @@
 import pygame
 
 
-class Shop:
-    def __init__(self):
-        self.font = pygame.font.Font(None, 50)
-        self.text = self.font.render("Shop", True, (255, 255, 255))
-        text_x = width // 2 - text.get_width() // 2
-        text_y = text.get_height() // 2
+class Shop(pygame.sprite.Sprite):
+    def __init__(self, pos):
+        super().__init__()
+        self.image = pygame.image.load('graphics\\Characters\\Shop\\shop.png')
+        self.image = pygame.transform.scale(self.image, (250, 250))
+        self.rect = self.image.get_rect(topleft=pos)
+        self.vector = pygame.math.Vector2(0, 0)
+        self.v = 5
+
+    def update(self, shift):
+        self.rect.x += shift

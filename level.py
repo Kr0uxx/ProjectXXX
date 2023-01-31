@@ -1,6 +1,7 @@
 import pygame
 from player import Player
 from mob import Mob
+from shop import Shop
 
 map1 = open("maps/map1.txt").readlines()
 size_x = 50
@@ -25,13 +26,40 @@ class Money(pygame.sprite.Sprite):
 class Platform(pygame.sprite.Sprite):
     def __init__(self, pos, size):
         super().__init__()
-        self.image = pygame.Surface((size, size))
+        self.size = size
+        self.image = pygame.image.load('graphics\\tiles\\town01.png')
+        self.image = pygame.transform.scale(self.image, (self.size, self.size))
         self.rect = self.image.get_rect(topleft=pos)
-        self.image.fill("black")
 
     def update(self, shift):
         # сдвиг платформ при движении камеры
         self.rect.x += shift
+
+    '''7 типов: поверхностные(X), боковые левые(L), средние(Z), боково-поверхностные левые(I), 
+    боково-поверхностные правые(J), всякие(A), боковые правые(R)'''
+
+    def type(self, typ):
+        if typ == 'X':
+            self.image = pygame.image.load('graphics\\tiles\\town01.png')
+            self.image = pygame.transform.scale(self.image, (self.size, self.size))
+        elif typ == 'R':
+            self.image = pygame.image.load('graphics\\tiles\\town02.png')
+            self.image = pygame.transform.scale(self.image, (self.size, self.size))
+        elif typ == 'L':
+            self.image = pygame.image.load('graphics\\tiles\\town07.png')
+            self.image = pygame.transform.scale(self.image, (self.size, self.size))
+        elif typ == 'Z':
+            self.image = pygame.image.load('graphics\\tiles\\town03.png')
+            self.image = pygame.transform.scale(self.image, (self.size, self.size))
+        elif typ == 'I':
+            self.image = pygame.image.load('graphics\\tiles\\town04.png')
+            self.image = pygame.transform.scale(self.image, (self.size, self.size))
+        elif typ == 'J':
+            self.image = pygame.image.load('graphics\\tiles\\town05.png')
+            self.image = pygame.transform.scale(self.image, (self.size, self.size))
+        elif typ == 'A':
+            self.image = pygame.image.load('graphics\\tiles\\town06.png')
+            self.image = pygame.transform.scale(self.image, (self.size, self.size))
 
 
 class Level:
@@ -46,10 +74,12 @@ class Level:
         self.moneys = pygame.sprite.Group()
         self.player = pygame.sprite.GroupSingle()
         self.mobs = pygame.sprite.Group()
+        self.shops = pygame.sprite.Group()
         for ind_r, r in enumerate(map2):
             for ind_c, c in enumerate(r):
-                if c == "X":
+                if c == "X" or c == "L" or c == "R" or c == "Z" or c == "I" or c == "J" or c == "A":
                     platform = Platform((size_x * ind_c, size_x * ind_r), size_x)
+                    platform.type(c)
                     self.platforms.add(platform)
                 elif c == "P":
                     player = Player((size_x * ind_c, size_x * ind_r))
@@ -60,6 +90,9 @@ class Level:
                 elif c == 'E':
                     enemy = Mob((size_x * ind_c, size_x * ind_r))
                     self.mobs.add(enemy)
+                elif c == 'S':
+                    shop = Shop((size_x * ind_c, size_x * ind_r))
+                    self.shops.add(shop)
 
     def camera_level(self):
         player = self.player.sprite
@@ -119,7 +152,9 @@ class Level:
         self.player.update()
         self.vertical()
         self.horizontal()
-        self.player.draw(self.screen)
         self.get_money()
         self.mobs.update(self.camera)
         self.mobs.draw(self.screen)
+        self.shops.update(self.camera)
+        self.shops.draw(self.screen)
+        self.player.draw(self.screen)

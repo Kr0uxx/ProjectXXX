@@ -9,9 +9,32 @@ class StartScreen:
         self._options = []
         self._callbacks = []
         self._current_option_index = 0
-        self.image = pygame.Surface((1280, 1080))
+        self.layer0 = pygame.image.load("graphics\\Layer_0011_0.png")
+        self.layer0 = pygame.transform.scale(self.layer0, (1000, 1380))
+        self.layer1 = pygame.image.load("graphics\\Layer_0010_1.png")
+        self.layer1 = pygame.transform.scale(self.layer1, (1000, 1380))
+        self.layer2 = pygame.image.load("graphics\\Layer_0009_2.png")
+        self.layer2 = pygame.transform.scale(self.layer2, (1000, 1380))
+        self.layer3 = pygame.image.load("graphics\\Layer_0008_3.png")
+        self.layer3 = pygame.transform.scale(self.layer3, (1000, 1380))
+        self.layer4 = pygame.image.load("graphics\\Layer_0007_Lights.png")
+        self.layer4 = pygame.transform.scale(self.layer4, (1000, 1380))
+        self.layer5 = pygame.image.load("graphics\\Layer_0006_4.png")
+        self.layer5 = pygame.transform.scale(self.layer5, (1000, 1380))
+        self.layer6 = pygame.image.load("graphics\\Layer_0005_5.png")
+        self.layer6 = pygame.transform.scale(self.layer6, (1000, 1380))
+        self.layer7 = pygame.image.load("graphics\\Layer_0004_Lights.png")
+        self.layer7 = pygame.transform.scale(self.layer7, (1000, 1380))
+        self.layer8 = pygame.image.load("graphics\\Layer_0003_6.png")
+        self.layer8 = pygame.transform.scale(self.layer8, (1000, 1380))
+        self.layer9 = pygame.image.load("graphics\\Layer_0002_7.png")
+        self.layer9 = pygame.transform.scale(self.layer9, (1000, 1380))
+        self.layer10 = pygame.image.load("graphics\\Layer_0001_8.png")
+        self.layer10 = pygame.transform.scale(self.layer10, (1000, 1380))
+        self.layer11 = pygame.image.load("graphics\\Layer_0000_9.png")
+        self.layer11 = pygame.transform.scale(self.layer11, (1000, 1380))
+        self.music = 'music\\start screen theme.mp3'
         self.screen = screen
-        self.image.fill('black')
 
     def append_option(self, option, callback):
         self._options.append(pygame.font.Font('dialogs\\fonts\\erin.ttf', 140).render(option, True, (255, 255, 255)))
@@ -22,12 +45,22 @@ class StartScreen:
         self._current_option_index = max(0, min(self._current_option_index + direction, len(self._options) - 1))
 
     def select(self):
-        pygame.mixer.music.load('music\\main theme.mp3')
-        pygame.mixer.music.play()
+        pygame.mixer.Sound('music\\sounds\\select.mp3').play()
         self._callbacks[self._current_option_index]()
 
     def run(self, x, y, option_y_padding):
-        self.screen.blit(self.image, (0, 0))
+        self.screen.blit(self.layer0, (0, -300))
+        self.screen.blit(self.layer1, (0, -300))
+        self.screen.blit(self.layer2, (0, -300))
+        self.screen.blit(self.layer3, (0, -300))
+        self.screen.blit(self.layer4, (0, -300))
+        self.screen.blit(self.layer5, (0, -300))
+        self.screen.blit(self.layer6, (0, -300))
+        self.screen.blit(self.layer7, (0, -300))
+        self.screen.blit(self.layer8, (0, -300))
+        self.screen.blit(self.layer9, (0, -300))
+        self.screen.blit(self.layer10, (0, -300))
+        self.screen.blit(self.layer11, (0, -300))
         for j, option in enumerate(self._options):
             option_rect: pygame.Rect = option.get_rect()
             option_rect.topleft = (x, y + j * option_y_padding)
