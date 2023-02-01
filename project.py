@@ -11,7 +11,8 @@ from dialogs import dialogs
 pygame.init()
 running = True
 
-# 5 состояний: game - в игре, start - на начальном экране, menu - в меню, death - на экране смерти, dialog - диалог
+''' 6 состояний: game - в игре, start - на начальном экране, menu - в меню, death - на экране смерти, dialog - диалог, 
+ point - точка сохранения'''
 status = 'start'
 
 # карта для уровня
@@ -54,6 +55,14 @@ def quit_game():
 
 def resume_game():
     music(main_theme)
+    player_stats.status = 'game'
+
+
+def start_game():
+    player_stats.status = 'game'
+
+
+def load_game():
     player_stats.status = 'game'
 
 
@@ -113,7 +122,7 @@ while running:
             if event.key == pygame.K_y:
                 player_stats.get_damage(10)
                 display.hp_subtraction(10)
-            if event.key == pygame.K_e:
+            if event.key == pygame.K_q:
                 player_stats.status = 'dialog'
     if player_stats.status == 'death':
         pygame.mixer.music.stop()

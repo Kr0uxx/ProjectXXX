@@ -47,10 +47,11 @@ class Player(pygame.sprite.Sprite):
 class PlayerStats:
     def __init__(self, status, hp, mana,  damage):
         self.status = status
+        self.max_hp = hp
+        self.max_mana = mana
         self.hp = hp
         self.mana = mana
         self.damage = damage
-
     def get_damage(self, damage):
         if (self.hp <= damage or self.hp < 1) and self.status != 'death':
             self.status = 'death'

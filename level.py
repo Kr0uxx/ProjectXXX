@@ -2,6 +2,7 @@ import pygame
 from player import Player
 from mob import Mob
 from shop import Shop
+from checkpoint import CheckPoint
 
 map1 = open("maps/map1.txt").readlines()
 size_x = 50
@@ -39,6 +40,7 @@ class Platform(pygame.sprite.Sprite):
     боково-поверхностные правые(J), всякие(A), боковые правые(R)'''
 
     def type(self, typ):
+        # тут лучше потом переделать хранение через словарь))
         if typ == 'X':
             self.image = pygame.image.load('graphics\\tiles\\town01.png')
             self.image = pygame.transform.scale(self.image, (self.size, self.size))
@@ -69,12 +71,14 @@ class Level:
         self.camera = 0
         self.money = 0
 
+
     def read(self, map2):
         self.platforms = pygame.sprite.Group()
         self.moneys = pygame.sprite.Group()
         self.player = pygame.sprite.GroupSingle()
         self.mobs = pygame.sprite.Group()
         self.shops = pygame.sprite.Group()
+        self.checkpoints = pygame.sprite.Group()
         for ind_r, r in enumerate(map2):
             for ind_c, c in enumerate(r):
                 if c == "X" or c == "L" or c == "R" or c == "Z" or c == "I" or c == "J" or c == "A":
@@ -93,6 +97,11 @@ class Level:
                 elif c == 'S':
                     shop = Shop((size_x * ind_c, size_x * ind_r))
                     self.shops.add(shop)
+                elif c == 'C':
+                    checkpoint = CheckPoint((size_x * ind_c, size_x * ind_r), self.screen)
+                    print((size_x * ind_c, size_x * ind_r))
+                    self.checkpoints.add(checkpoint)
+
 
     def camera_level(self):
         player = self.player.sprite
@@ -143,6 +152,13 @@ class Level:
         text = f.render(f"money: {str(self.money)}", True, (0, 0, 0))
         self.screen.blit(text, (20, 130))
 
+    def open_checkpoint(self):
+        player = self.player.sprite
+        for point in self.checkpoints:
+            if pygame.sprite.collide_rect(point, player):
+                self.screen.blit(point.e_key_image, (point.rect.x + 25, point.rect.y - 60))
+                point.interaction()
+
     def run(self):
         self.platforms.update(self.camera)
         self.platforms.draw(self.screen)
@@ -153,8 +169,11 @@ class Level:
         self.vertical()
         self.horizontal()
         self.get_money()
+        self.open_checkpoint()
         self.mobs.update(self.camera)
         self.mobs.draw(self.screen)
         self.shops.update(self.camera)
         self.shops.draw(self.screen)
+        self.checkpoints.update(self.camera)
+        self.checkpoints.draw(self.screen)
         self.player.draw(self.screen)

@@ -37,7 +37,7 @@ class StartScreen:
         self.screen = screen
 
     def append_option(self, option, callback):
-        self._options.append(pygame.font.Font('dialogs\\fonts\\erin.ttf', 140).render(option, True, (255, 255, 255)))
+        self._options.append(pygame.font.Font('dialogs\\fonts\\Bento.otf', 100).render(option, True, (255, 255, 255)))
         self._callbacks.append(callback)
 
     def switch(self, direction):
