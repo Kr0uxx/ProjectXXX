@@ -7,6 +7,7 @@ from start_screen import StartScreen
 from dead_screen import DeadScreen
 from player import PlayerStats
 from dialogs import dialogs
+from checkpoints_display import PointsDisplay
 
 pygame.init()
 running = True
@@ -141,6 +142,8 @@ while running:
         dialogs(screen, 'dialogs\\dialog001\\dialog1')
         time.sleep(2)
         player_stats.status = 'game'
+    elif player_stats.status == 'point':
+        pass
     pygame.display.flip()
     clock.tick(144)
 pygame.quit()

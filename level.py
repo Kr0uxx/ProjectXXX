@@ -110,14 +110,14 @@ class Level:
         vectorx = player.vector.x
         vectory = player.vector.y
         if playerx <= width / 2 and vectorx < 0:
-            self.camera = 5
+            self.camera = 10
             player.v = 0
         elif playerx > width / 2 and vectorx > 0:
-            self.camera = -5
+            self.camera = -10
             player.v = 0
         else:
             self.camera = 0
-            player.v = 5
+            player.v = 10
 
     def vertical(self):
         player = self.player.sprite
