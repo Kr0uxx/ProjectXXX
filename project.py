@@ -1,208 +1,149 @@
 import pygame
-import sys
-
-#карта для уровня
-map1 = [
-'                                                   ',
-'                                         M         ',
-'         M             M              XXXXXXXXXX   ',
-' XX    XXX            XX                           ',
-'MXX P                         XXXXXX               ',
-'XXXXX        XXX         XX           XXXXX     M  ',
-' XXXX       XX                    M XXX       XXXXX',
-' XX    X  XXXX    XX  XX          XXX              ',
-'       X  XXXX M  XX  XXX                XXXX      ',
-'  M XXXX  XXXXXX  XX  XXXX  M XX         XX    M   ',
-'XXXXXXXX  XXXX    XX  XXXX  XXXXX        XX   XXXXX']
+import time
+from level import Level
+from display import Display
+from menu import Menu
+from start_screen import StartScreen
+from dead_screen import DeadScreen
+from player import PlayerStats
+from dialogs import dialogs
+from checkpoints_display import PointsDisplay
 
 pygame.init()
+running = True
 
+''' 6 состояний: game - в игре, start - на начальном экране, menu - в меню, death - на экране смерти, dialog - диалог, 
+ point - точка сохранения'''
+status = 'start'
+
+# карта для уровня
+map1 = open("maps/map1.txt").readlines()
+active_map = map1
+
+# музыка
+main_theme = 'music\\main theme.mp3'
+start_screen_theme = 'music\\start screen theme.mp3'
+
+
+def music(music_name, volume=0.5, loops=-1):
+    pygame.mixer.music.load(music_name)
+    pygame.mixer.music.set_volume(volume)
+    pygame.mixer.music.play(loops=loops)
+
+
+music(start_screen_theme)
 size_x = 50
-width = 800
+width = 1000
 height = len(map1) * size_x
+damage = 5
 
 size = width, height
 screen = pygame.display.set_mode(size)
 clock = pygame.time.Clock()
 
-class Platform(pygame.sprite.Sprite):
-    def __init__(self, pos, size):
-        super().__init__()
-        self.image = pygame.Surface((size, size))
-        self.rect = self.image.get_rect(topleft = pos)
-        self.image.fill("black")
-
-    def update(self, shift):
-        #сдвиг платформ при движении камеры
-        self.rect.x += shift
-
-
-class Money(pygame.sprite.Sprite):
-    def __init__(self, pos):
-        super().__init__()
-        self.image = pygame.Surface((30, 30))
-        self.rect = self.image.get_rect(topleft = pos)
-        self.image.fill("orange")
-
-    def update(self, shift):
-        #сдвиг монеток при движении камеры
-        self.rect.x += shift
-
-
-
-class Player(pygame.sprite.Sprite):
-    def __init__(self, pos):
-        super().__init__()
-        self.image = pygame.Surface((50, 50))
-        self.image.fill("purple")
-        self.rect = self.image.get_rect(topleft = pos)
-
-        self.vector = pygame.math.Vector2(0,0)
-        self.v = 5
-        #характеристики прыжка
-        self.gravity = 0.3
-        self.v_jump = -5
-        self.lose = False
-
-    def get_key(self):
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
-            self.vector.x = 1
-        elif keys[pygame.K_LEFT] or keys[pygame.K_a]:
-            self.vector.x = -1
-        else:
-            self.vector.x = 0
-
-        if keys[pygame.K_UP] or keys[pygame.K_SPACE] or keys[pygame.K_w]:
-            self.jump()
-
-    def with_gravity(self):
-        self.vector.y += self.gravity
-        self.rect.y += self.vector.y
-
-    def jump(self):
-        self.vector.y = self.v_jump
-
-    def update(self):
-        self.get_key()
-        if not self.lose:
-            if self.rect.y > len(map1) * size_x:
-                self.lose = True
-                print("you've lost")
-        if self.lose:
-            f = pygame.font.Font(None, 70)
-            text = f.render("you've lost", 1, "red")
-            screen.blit(text, (300, 250))
-
-
-class Level:
-    def __init__(self, map, surface):
-        self.surface = surface
-        self.read(map)
-        self.camera = 0
-
-    def read(self, map):
-        self.platforms = pygame.sprite.Group()
-        self.moneys = pygame.sprite.Group()
-        self.player = pygame.sprite.GroupSingle()
-        for ind_r, r in enumerate(map):
-            for ind_c, c in enumerate(r):
-                if c == "X":
-                    platform = Platform((size_x * ind_c, size_x * ind_r), size_x)
-                    self.platforms.add(platform)
-                elif c == "P":
-                    player = Player((size_x * ind_c, size_x * ind_r))
-                    self.player.add(player)
-                elif c == "M":
-                    money = Money((size_x * ind_c, size_x * ind_r))
-                    self.moneys.add(money)
-
-
-    def camera_level(self):
-        player = self.player.sprite
-        playerx = player.rect.centerx
-        playery = player.rect.centery
-        vectorx = player.vector.x
-        vectory = player.vector.y
-        if playerx <= width / 2 and vectorx < 0:
-            self.camera = 5
-            player.v = 0
-        elif playerx >= width / 2 and vectorx > 0:
-            self.camera = -5
-            player.v = 0
-        #elif playery > height / 2 and vectory > 0:
-            #self.camera = 5
-            #player.v = 0
-        #elif playery < height / 2 and vectory < 0:
-            #self.camera = -5
-            #player.v = 0
-        else:
-            self.camera = 0
-            player.v = 5
-
-    def vertical(self):
-        player = self.player.sprite
-        player.rect.x += player.vector.x * player.v
-        for platform in self.platforms.sprites():
-            if platform.rect.colliderect(player.rect):
-                if player.vector.x > 0:
-                    player.rect.right = platform.rect.left
-                elif player.vector.x < 0:
-                    player.rect.left = platform.rect.right
-
-    def horizontal(self):
-        player = self.player.sprite
-        player.with_gravity()
-        for platform in self.platforms.sprites():
-            if platform.rect.colliderect(player.rect):
-                if player.vector.y > 0:
-                    player.vector.y = 0
-                    player.rect.bottom = platform.rect.top
-                elif player.vector.y < 0:
-                    player.rect.top = platform.rect.bottom
-                    player.vector.y = 0
-
-
-    def get_money(self):
-        global count_money
-        player = self.player.sprite
-        for money in self.moneys:
-            if pygame.sprite.collide_rect(money, player):
-                money.kill()
-                count_money += 1
-                print(count_money)
-        f = pygame.font.Font(None, 40)
-        text = f.render(f"money: {str(count_money)}", 1, "black")
-        screen.blit(text, (20, 30))
-
-
-
-    def run(self):
-        self.platforms.update(self.camera)
-        self.platforms.draw(self.surface)
-        self.moneys.update(self.camera)
-        self.moneys.draw(self.surface)
-        self.get_money()
-        self.camera_level()
-        self.player.update()
-        self.vertical()
-        self.horizontal()
-        self.player.draw(self.surface)
-
-
 level = Level(map1, screen)
-count_money = 0
 
-running = True
+player_stats = PlayerStats(status, 1000, 1000, damage)
+display = Display(screen, width, player_stats.hp, player_stats.mana)
+
+
+# f меню:
+
+def quit_game():
+    global running
+    running = False
+
+
+def resume_game():
+    music(main_theme)
+    player_stats.status = 'game'
+
+
+def start_game():
+    player_stats.status = 'game'
+
+
+def load_game():
+    player_stats.status = 'game'
+
+
+def go_start_screen():
+    player_stats.status = 'start'
+
+
+def open_settings():
+    pass
+
+
+# меню
+menu = Menu(screen)
+menu.append_option('Resume', resume_game)
+menu.append_option('Settings', open_settings)
+menu.append_option('Start Screen', go_start_screen)
+menu.append_option('Quit', quit_game)
+
+# начальный экран
+start_screen = StartScreen(screen)
+start_screen.append_option('Start', resume_game)
+start_screen.append_option('Settings', open_settings)
+start_screen.append_option('Quit', quit_game)
+
+# экран смерти
+dead_screen = DeadScreen(screen)
+
+# графика
+bg1 = pygame.image.load("graphics\\background_layer_1.png")
+bg1 = pygame.transform.scale(bg1, (1000, 1080))
+bg2 = pygame.image.load("graphics\\background_layer_2.png")
+bg2 = pygame.transform.scale(bg2, (1000, 1080))
+bg3 = pygame.image.load("graphics\\background_layer_3.png")
+bg3 = pygame.transform.scale(bg3, (1000, 1080))
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-    screen.fill("white")
-    level.run()
+        if event.type == pygame.KEYDOWN:
+            if player_stats.status == 'game':
+                if event.key == pygame.K_ESCAPE:
+                    player_stats.status = 'menu'
+            elif player_stats.status == 'start':
+                if event.key == pygame.K_w:
+                    start_screen.switch(-1)
+                elif event.key == pygame.K_s:
+                    start_screen.switch(1)
+                elif event.key == pygame.K_RETURN:
+                    start_screen.select()
+            elif player_stats.status == 'menu':
+                if event.key == pygame.K_w:
+                    menu.switch(-1)
+                elif event.key == pygame.K_s:
+                    menu.switch(1)
+                elif event.key == pygame.K_RETURN:
+                    menu.select()
+            if event.key == pygame.K_y:
+                player_stats.get_damage(10)
+                display.hp_subtraction(10)
+            if event.key == pygame.K_q:
+                player_stats.status = 'dialog'
+    if player_stats.status == 'death':
+        pygame.mixer.music.stop()
+        dead_screen.run()
+    elif player_stats.status == 'game':
+        screen.blit(bg1, (0, 0))
+        screen.blit(bg2, (0, 0))
+        screen.blit(bg3, (0, 0))
+        level.run()
+        display.run()
+    elif player_stats.status == 'start':
+        start_screen.run(50, 350, 165)
+    elif player_stats.status == 'menu':
+        menu.run(50, 350, 165)
+    elif player_stats.status == 'dialog':
+        dialogs(screen, 'dialogs\\dialog001\\dialog1')
+        time.sleep(2)
+        player_stats.status = 'game'
+    elif player_stats.status == 'point':
+        pass
     pygame.display.flip()
-    clock.tick(60)
+    clock.tick(144)
 pygame.quit()
-
-
-
