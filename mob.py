@@ -9,6 +9,7 @@ class Mob(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft=pos)
         self.vector = pygame.math.Vector2(0, 0)
         self.v = 5
+        self.health = 10
 
     def update(self, shift):
         self.rect.x += shift

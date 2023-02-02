@@ -110,14 +110,14 @@ class Level:
         vectorx = player.vector.x
         vectory = player.vector.y
         if playerx <= width / 2 and vectorx < 0:
-            self.camera = 5
+            self.camera = 10
             player.v = 0
         elif playerx > width / 2 and vectorx > 0:
-            self.camera = -5
+            self.camera = -10
             player.v = 0
         else:
             self.camera = 0
-            player.v = 5
+            player.v = 10
 
     def vertical(self):
         player = self.player.sprite
@@ -151,6 +151,24 @@ class Level:
         f = pygame.font.Font(None, 40)
         text = f.render(f"money: {str(self.money)}", True, (0, 0, 0))
         self.screen.blit(text, (20, 130))
+
+    def enemy_death(self):
+        player = self.player.sprite
+        for enemy in self.mobs:
+            if abs(player.rect[0] - enemy.rect[0]) <= 100 and abs(player.rect[1] - enemy.rect[1]) <= 50:
+                enemy.health -= 2
+                print("enemy health:", enemy.health)
+                #f = pygame.font.Font(None, 40)
+                #text = f.render(f"enemy health: {str(enemy.health)}", 1, "black")
+                #screen.blit(text, (enemy.rect.x, enemy.rect.y))
+            if enemy.health == 0:
+                enemy.kill()
+                money = Money((enemy.rect[0] + 50, enemy.rect[1]))
+                self.moneys.add(money)
+                money = Money((enemy.rect[0], enemy.rect[1]))
+                self.moneys.add(money)
+                money = Money((enemy.rect[0] - 50, enemy.rect[1]))
+                self.moneys.add(money)
 
     def open_checkpoint(self):
         player = self.player.sprite
