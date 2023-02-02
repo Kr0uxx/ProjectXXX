@@ -39,11 +39,9 @@ damage = 5
 size = width, height
 screen = pygame.display.set_mode(size)
 clock = pygame.time.Clock()
-
-level = Level(map1, screen)
-
 player_stats = PlayerStats(status, 1000, 1000, damage)
 display = Display(screen, width, player_stats.hp, player_stats.mana)
+level = Level(map1, screen, display, player_stats)
 
 
 # f меню:
@@ -90,6 +88,11 @@ start_screen.append_option('Quit', quit_game)
 # экран смерти
 dead_screen = DeadScreen(screen)
 
+# таймер атаки моба
+timer_interval = 1000
+timer_event = pygame.USEREVENT + 1
+pygame.time.set_timer(timer_event, timer_interval)
+
 # графика
 bg1 = pygame.image.load("graphics\\background_layer_1.png")
 bg1 = pygame.transform.scale(bg1, (1000, 1080))
@@ -98,6 +101,7 @@ bg2 = pygame.transform.scale(bg2, (1000, 1080))
 bg3 = pygame.image.load("graphics\\background_layer_3.png")
 bg3 = pygame.transform.scale(bg3, (1000, 1080))
 while running:
+    level.attack_enabled = False
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -122,8 +126,10 @@ while running:
             if event.key == pygame.K_y:
                 player_stats.get_damage(10)
                 display.hp_subtraction(10)
-            if event.key == pygame.K_q:
+            if event.key == pygame.K_e:
                 player_stats.status = 'dialog'
+        elif pygame.event == timer_event:
+            level.enemy_attack()
     if player_stats.status == 'death':
         pygame.mixer.music.stop()
         dead_screen.run()

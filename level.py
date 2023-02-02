@@ -65,11 +65,14 @@ class Platform(pygame.sprite.Sprite):
 
 
 class Level:
-    def __init__(self, map2, screen):
+    def __init__(self, map2, screen, display, player_stats):
         self.screen = screen
         self.read(map2)
         self.camera = 0
         self.money = 0
+        self.display = display
+        self.attack_enabled = False
+        self.player_stats = player_stats
 
 
     def read(self, map2):
@@ -101,7 +104,6 @@ class Level:
                     checkpoint = CheckPoint((size_x * ind_c, size_x * ind_r), self.screen)
                     print((size_x * ind_c, size_x * ind_r))
                     self.checkpoints.add(checkpoint)
-
 
     def camera_level(self):
         player = self.player.sprite
@@ -152,6 +154,26 @@ class Level:
         text = f.render(f"money: {str(self.money)}", True, (0, 0, 0))
         self.screen.blit(text, (20, 130))
 
+    def enemy_attack(self):
+        for mob in self.mobs:
+            if abs(mob.rect[0] - self.player.sprite.rect[0]) <= 200 and abs(
+                    mob.rect[1] - self.player.sprite.rect[1]) <= 50:
+                self.player_stats.get_damage(100)
+                self.display.hp_subtraction(100)
+                print(self.player_stats.hp)
+
+    def check_enemy(self):
+        for mob in self.mobs:
+            if abs(mob.rect[0] - self.player.sprite.rect[0]) <= 200 and abs(
+                    mob.rect[1] - self.player.sprite.rect[1]) <= 50:
+                self.attack_enabled = True
+                if mob.x_pos + 100 <= mob.step_counter and mob.rect[0] > self.player.sprite.rect[0]:
+                    mob.v = -4
+                if mob.x_pos - 100 >= mob.step_counter and mob.rect[0] < self.player.sprite.rect[0]:
+                    mob.v = 4
+                mob.rect.x += mob.v
+                mob.step_counter += mob.v
+
     def open_checkpoint(self):
         player = self.player.sprite
         for point in self.checkpoints:
@@ -169,6 +191,7 @@ class Level:
         self.vertical()
         self.horizontal()
         self.get_money()
+        self.check_enemy()
         self.open_checkpoint()
         self.mobs.update(self.camera)
         self.mobs.draw(self.screen)

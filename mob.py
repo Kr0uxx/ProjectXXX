@@ -8,7 +8,9 @@ class Mob(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(self.image, (100, 100))
         self.rect = self.image.get_rect(topleft=pos)
         self.vector = pygame.math.Vector2(0, 0)
-        self.v = 5
+        self.v = 4
+        self.x_pos = self.rect.x
+        self.step_counter = self.rect.x
 
     def update(self, shift):
         self.rect.x += shift

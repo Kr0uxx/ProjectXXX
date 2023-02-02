@@ -14,6 +14,7 @@ class Player(pygame.sprite.Sprite):
         super().__init__()
         self.image = pygame.image.load('graphics\\Characters\\Hero\\idle\\frame-01.png')
         self.image = pygame.transform.scale(self.image, (100, 100))
+        # self.image = pygame.transform.flip(self.image, True, False)
         self.rect = self.image.get_rect(topleft=pos)
 
         self.vector = pygame.math.Vector2(0, 0)
@@ -25,8 +26,12 @@ class Player(pygame.sprite.Sprite):
     def get_key(self):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_d]:
+            # if self.vector.x != 1:
+            #     self.image = pygame.transform.flip(self.image, True, False)
             self.vector.x = 1
         elif keys[pygame.K_a]:
+            # if self.vector.x != -1:
+            #     self.image = pygame.transform.flip(self.image, True, False)
             self.vector.x = -1
         else:
             self.vector.x = 0
