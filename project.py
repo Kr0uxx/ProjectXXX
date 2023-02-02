@@ -103,7 +103,7 @@ while running:
             running = False
         if event.type == pygame.KEYDOWN and event.key == pygame.K_b:
             level.enemy_death()
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+        if event.type == pygame.KEYDOWN and (event.key == pygame.K_UP or event.key == pygame.K_SPACE or event.key == pygame.K_w):
             level.jump_check()
         if event.type == pygame.KEYDOWN:
             if player_stats.status == 'game':

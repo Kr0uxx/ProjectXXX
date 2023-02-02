@@ -27,8 +27,12 @@ class Player(pygame.sprite.Sprite):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
             self.vector.x = 1
+            self.image = pygame.image.load('graphics\\Characters\\Hero\\idle\\frame-01.png')
+            self.image = pygame.transform.scale(self.image, (100, 100))
         elif keys[pygame.K_LEFT] or keys[pygame.K_a]:
             self.vector.x = -1
+            self.image = pygame.image.load('graphics\\Characters\\Hero\\idle\\frame-01.2.png')
+            self.image = pygame.transform.scale(self.image, (100, 100))
         else:
             self.vector.x = 0
 
