@@ -7,6 +7,7 @@ width = 1000
 height = len(map1) * size_x
 size = width, height
 screen = pygame.display.set_mode(size)
+player_v = 10
 
 
 class Player(pygame.sprite.Sprite):
@@ -17,10 +18,10 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft=pos)
 
         self.vector = pygame.math.Vector2(0, 0)
-        self.v = 10
+        self.v = player_v
         # характеристики прыжка
         self.gravity = 0.3
-        self.v_jump = -5
+        self.v_jump = -7
 
     def move(self):
         keys = pygame.key.get_pressed()
