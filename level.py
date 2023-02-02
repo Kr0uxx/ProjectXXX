@@ -10,6 +10,8 @@ width = 1000
 status = 'start'
 hp = 100
 damage = 5
+up_counter = 0
+jump_state = False
 
 
 class Money(pygame.sprite.Sprite):
@@ -158,9 +160,6 @@ class Level:
             if abs(player.rect[0] - enemy.rect[0]) <= 100 and abs(player.rect[1] - enemy.rect[1]) <= 50:
                 enemy.health -= 2
                 print("enemy health:", enemy.health)
-                #f = pygame.font.Font(None, 40)
-                #text = f.render(f"enemy health: {str(enemy.health)}", 1, "black")
-                #screen.blit(text, (enemy.rect.x, enemy.rect.y))
             if enemy.health == 0:
                 enemy.kill()
                 money = Money((enemy.rect[0] + 50, enemy.rect[1]))
@@ -169,6 +168,21 @@ class Level:
                 self.moneys.add(money)
                 money = Money((enemy.rect[0] - 50, enemy.rect[1]))
                 self.moneys.add(money)
+
+    def jump_check(self):
+        global up_counter
+        global jump_state
+        player = self.player.sprite
+        for platform in self.platforms:
+            if player.rect.bottom == platform.rect.top:
+                jump_state = True
+                up_counter = 0
+        if up_counter != 2 and jump_state:
+            player.jump()
+            up_counter += 1
+        if up_counter == 2:
+            up_counter = 0
+            jump_state = False
 
     def open_checkpoint(self):
         player = self.player.sprite

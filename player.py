@@ -22,16 +22,14 @@ class Player(pygame.sprite.Sprite):
         self.gravity = 0.3
         self.v_jump = -5
 
-    def get_key(self):
+    def move(self):
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_d]:
+        if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
             self.vector.x = 1
-        elif keys[pygame.K_a]:
+        elif keys[pygame.K_LEFT] or keys[pygame.K_a]:
             self.vector.x = -1
         else:
             self.vector.x = 0
-        if keys[pygame.K_SPACE]:
-            self.jump()
 
     def with_gravity(self):
         self.vector.y += self.gravity
@@ -41,7 +39,7 @@ class Player(pygame.sprite.Sprite):
         self.vector.y = self.v_jump
 
     def update(self):
-        self.get_key()
+        self.move()
 
 
 class PlayerStats:
