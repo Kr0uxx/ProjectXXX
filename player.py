@@ -57,6 +57,7 @@ class PlayerStats:
         self.hp = hp
         self.mana = mana
         self.damage = damage
+
     def get_damage(self, damage):
         if (self.hp <= damage or self.hp < 1) and self.status != 'death':
             self.status = 'death'

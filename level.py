@@ -164,15 +164,14 @@ class Level:
 
     def check_enemy(self):
         for mob in self.mobs:
-            if abs(mob.rect[0] - self.player.sprite.rect[0]) <= 200 and abs(
-                    mob.rect[1] - self.player.sprite.rect[1]) <= 50:
-                self.attack_enabled = True
-                if mob.x_pos + 100 <= mob.step_counter and mob.rect[0] > self.player.sprite.rect[0]:
-                    mob.v = -4
-                if mob.x_pos - 100 >= mob.step_counter and mob.rect[0] < self.player.sprite.rect[0]:
-                    mob.v = 4
-                mob.rect.x += mob.v
-                mob.step_counter += mob.v
+            if mob.x_pos + 60 <= mob.step_counter:
+                mob.v = -3
+                mob.image = pygame.transform.flip(mob.image, True, False)
+            if mob.x_pos - 60 >= mob.step_counter:
+                mob.v = 3
+                mob.image = pygame.transform.flip(mob.image, True, False)
+            mob.rect.x += mob.v
+            mob.step_counter += mob.v
 
     def open_checkpoint(self):
         player = self.player.sprite
