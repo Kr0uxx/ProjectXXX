@@ -3,10 +3,11 @@ from player import Player
 from mob import Mob
 from shop import Shop
 from checkpoint import CheckPoint
+from checkpoints_display import PointsDisplay
 
 map1 = open("maps/map1.txt").readlines()
 size_x = 50
-width = 1000
+width = 1500
 status = 'start'
 hp = 100
 damage = 5
@@ -65,14 +66,15 @@ class Platform(pygame.sprite.Sprite):
 
 
 class Level:
-    def __init__(self, map2, screen):
+    def __init__(self, map2, screen, player_status):
         self.screen = screen
         self.read(map2)
         self.camera = 0
         self.money = 0
+        self.status = player_status
+        self.points_display = PointsDisplay(screen)
 
-
-    def read(self, map2):
+    def read(self, map2, pos=(150, 450)):
         self.platforms = pygame.sprite.Group()
         self.moneys = pygame.sprite.Group()
         self.player = pygame.sprite.GroupSingle()
@@ -86,7 +88,8 @@ class Level:
                     platform.type(c)
                     self.platforms.add(platform)
                 elif c == "P":
-                    player = Player((size_x * ind_c, size_x * ind_r))
+                    # pos = size_x * ind_c, size_x * ind_r
+                    player = Player(pos)
                     self.player.add(player)
                 elif c == "M":
                     money = Money((size_x * ind_c, size_x * ind_r))
@@ -102,6 +105,7 @@ class Level:
                     print((size_x * ind_c, size_x * ind_r))
                     self.checkpoints.add(checkpoint)
 
+        return pos
 
     def camera_level(self):
         player = self.player.sprite
@@ -157,7 +161,16 @@ class Level:
         for point in self.checkpoints:
             if pygame.sprite.collide_rect(point, player):
                 self.screen.blit(point.e_key_image, (point.rect.x + 25, point.rect.y - 60))
-                point.interaction()
+                keys = pygame.key.get_pressed()
+                if keys[pygame.K_e]:
+                    return point.interaction()
+
+    def camera_centred(self, x):
+        self.platforms.update(x)
+        self.moneys.update(x)
+        self.mobs.update(x)
+        self.shops.update(x)
+        self.checkpoints.update(x)
 
     def run(self):
         self.platforms.update(self.camera)

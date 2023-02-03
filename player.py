@@ -3,7 +3,7 @@ from dead_screen import DeadScreen
 
 map1 = open("maps/map1.txt").readlines()
 size_x = 50
-width = 1000
+width = 1500
 height = len(map1) * size_x
 size = width, height
 screen = pygame.display.set_mode(size)
@@ -19,8 +19,8 @@ class Player(pygame.sprite.Sprite):
         self.vector = pygame.math.Vector2(0, 0)
         self.v = 10
         # характеристики прыжка
-        self.gravity = 0.3
-        self.v_jump = -5
+        self.gravity = 1
+        self.v_jump = -16
 
     def get_key(self):
         keys = pygame.key.get_pressed()
@@ -45,18 +45,17 @@ class Player(pygame.sprite.Sprite):
 
 
 class PlayerStats:
-    def __init__(self, status, hp, mana,  damage):
+    def __init__(self, status, hp, mana, damage):
         self.status = status
         self.max_hp = hp
         self.max_mana = mana
         self.hp = hp
         self.mana = mana
         self.damage = damage
+
     def get_damage(self, damage):
         if (self.hp <= damage or self.hp < 1) and self.status != 'death':
             self.status = 'death'
             pygame.mixer.Sound('music\\sounds\\death music.mp3').play()
         elif self.hp > 0:
             self.hp -= damage
-
-
