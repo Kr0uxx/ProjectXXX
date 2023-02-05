@@ -1,7 +1,9 @@
 import pygame
 import time
 from level import Level
+from level import Border
 from display import Display
+#from border import Border
 from menu import Menu
 from start_screen import StartScreen
 from dead_screen import DeadScreen
@@ -33,14 +35,21 @@ def music(music_name, volume=0.5, loops=-1):
 music(start_screen_theme)
 size_x = 50
 width = 1000
-height = len(map1) * size_x
 damage = 5
+
+f = open("maps//map1.txt", mode="rt")
+data = f.readlines()
+map_w = len(data[17]) * size_x
+height = len(data) * size_x
+f.close()
 
 size = width, height
 screen = pygame.display.set_mode(size)
 clock = pygame.time.Clock()
 
 level = Level(map1, screen)
+vert1 = Border(0, 0, 0, height)
+vert2 = Border(map_w, 0, map_w, height)
 
 player_stats = PlayerStats(status, 1000, 1000, damage)
 display = Display(screen, width, player_stats.hp, player_stats.mana)
@@ -146,5 +155,5 @@ while running:
         time.sleep(2)
         player_stats.status = 'game'
     pygame.display.flip()
-    clock.tick(144)
+    clock.tick(10)
 pygame.quit()

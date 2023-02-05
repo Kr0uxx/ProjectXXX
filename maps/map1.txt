@@ -9,9 +9,9 @@
         M             M              IXXXXXXXXJ
  IJP    IXJ C         AA              E
 MLR                           IXXXXJ                    C
-IZZXJ                    AA          IXXXXJ     M                 S
+IZZXJ                                IXXXXJ     M                 S
  LR                                 IZR       IXXXJ
- L    E          M IXXXXJ
+      E          M IXXXXJ
                  IXXXZZZR      E
   M IXXXXXXXXXXXXXZZZZZZZR  M            IJ    M
 IXXXZZZZZZZZZZZZZZZZZZZZZZXXXXXXXXXXXXXXXZZXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXJ
