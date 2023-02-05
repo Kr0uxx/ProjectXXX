@@ -6,7 +6,7 @@ from menu import Menu
 from start_screen import StartScreen
 from dead_screen import DeadScreen
 from player import PlayerStats, Player
-from dialogs import dialogs
+from dialogs import Dialog
 from checkpoints_display import PointsDisplay
 
 pygame.init()
@@ -44,6 +44,7 @@ player_stats = PlayerStats(status, 1000, 1000, damage)
 level = Level(map1, screen, player_stats.status)
 
 display = Display(screen, width, player_stats.hp, player_stats.mana)
+dialog = Dialog(screen)
 
 # игрок
 player = Player(level.read(map1))
@@ -96,7 +97,6 @@ def load_game():
     active = open('system files/active_checkpoint').read()
     x, y = checkpoints2[active][0], checkpoints2[active][1] + 200
     print(x, 0 - x)
-    level.camera_centred(x)
     level.camera_centred(-x)
 
 
@@ -151,21 +151,21 @@ while running:
             if player_stats.status == 'game':
                 if event.key == pygame.K_ESCAPE:
                     player_stats.status = 'menu'
-            elif player_stats.status == 'start':
+            if player_stats.status == 'start':
                 if event.key == pygame.K_w:
                     start_screen.switch(-1)
                 elif event.key == pygame.K_s:
                     start_screen.switch(1)
                 elif event.key == pygame.K_RETURN:
                     start_screen.select()
-            elif player_stats.status == 'menu':
+            if player_stats.status == 'menu':
                 if event.key == pygame.K_w:
                     menu.switch(-1)
                 elif event.key == pygame.K_s:
                     menu.switch(1)
                 elif event.key == pygame.K_RETURN:
                     menu.select()
-            elif player_stats.status == 'point':
+            if player_stats.status == 'point':
                 if event.key == pygame.K_ESCAPE:
                     player_stats.status = 'game'
                 elif event.key == pygame.K_w:
@@ -174,6 +174,11 @@ while running:
                     points_display.switch(1)
                 elif event.key == pygame.K_RETURN:
                     points_display.select()
+            '''if player_stats.status == 'dialog':
+                print('a0')
+                if event.key == pygame.K_e and dialog.lever:
+                    dialog.replicas += 1
+                    dialog.lever = False'''
             if event.key == pygame.K_y:
                 player_stats.get_damage(10)
                 display.hp_subtraction(10)
@@ -182,6 +187,10 @@ while running:
     if player_stats.status == 'death':
         pygame.mixer.music.stop()
         dead_screen.run()
+    elif player_stats.status == 'dialog':
+        dialog.play(101, 2)
+        time.sleep(2)
+        player_stats.status = 'game'
     elif player_stats.status == 'game':
         screen.blit(bg1, (0, 0))
         screen.blit(bg2, (0, 0))
@@ -194,10 +203,6 @@ while running:
         start_screen.run(50, 350, 165)
     elif player_stats.status == 'menu':
         menu.run(50, 350, 165)
-    elif player_stats.status == 'dialog':
-        dialogs(screen, 'dialogs\\dialog001\\dialog1')
-        time.sleep(2)
-        player_stats.status = 'game'
     elif player_stats.status == 'point':
         points_display.run(50, 350, 165)
         points_display.append_option(teleport)

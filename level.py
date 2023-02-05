@@ -73,6 +73,8 @@ class Level:
         self.money = 0
         self.status = player_status
         self.points_display = PointsDisplay(screen)
+        self.e_key_image = pygame.image.load('graphics\\display\\keys\\e_key.png')
+        self.e_key_image = pygame.transform.scale(self.e_key_image, (50, 50))
 
     def read(self, map2, pos=(150, 450)):
         self.platforms = pygame.sprite.Group()
@@ -98,7 +100,7 @@ class Level:
                     enemy = Mob((size_x * ind_c, size_x * ind_r))
                     self.mobs.add(enemy)
                 elif c == 'S':
-                    shop = Shop((size_x * ind_c, size_x * ind_r))
+                    shop = Shop((size_x * ind_c, size_x * ind_r), self.screen)
                     self.shops.add(shop)
                 elif c == 'C':
                     checkpoint = CheckPoint((size_x * ind_c, size_x * ind_r), self.screen)
@@ -152,7 +154,7 @@ class Level:
                 pygame.mixer.Sound('music\\sounds\\coin.wav').play()
                 money.kill()
                 self.money += 1
-        f = pygame.font.Font(None, 40)
+        f = pygame.font.Font('dialogs\\fonts\\Silver.ttf', 40)
         text = f.render(f"money: {str(self.money)}", True, (0, 0, 0))
         self.screen.blit(text, (20, 130))
 
@@ -160,10 +162,19 @@ class Level:
         player = self.player.sprite
         for point in self.checkpoints:
             if pygame.sprite.collide_rect(point, player):
-                self.screen.blit(point.e_key_image, (point.rect.x + 25, point.rect.y - 60))
+                self.screen.blit(self.e_key_image, (point.rect.x + 25, point.rect.y - 60))
                 keys = pygame.key.get_pressed()
                 if keys[pygame.K_e]:
                     return point.interaction()
+
+    def shop_collision(self):
+        player = self.player.sprite
+        for shop in self.shops:
+            if pygame.sprite.collide_rect(shop, player):
+                self.screen.blit(self.e_key_image, (shop.rect.x + 100, shop.rect.y - 30))
+                keys = pygame.key.get_pressed()
+                if keys[pygame.K_e]:
+                    return shop.interaction()
 
     def camera_centred(self, x):
         self.platforms.update(x)
@@ -181,12 +192,14 @@ class Level:
         self.player.update()
         self.vertical()
         self.horizontal()
-        self.get_money()
+
         self.open_checkpoint()
-        self.mobs.update(self.camera)
-        self.mobs.draw(self.screen)
         self.shops.update(self.camera)
         self.shops.draw(self.screen)
+        self.mobs.update(self.camera)
+        self.mobs.draw(self.screen)
         self.checkpoints.update(self.camera)
         self.checkpoints.draw(self.screen)
         self.player.draw(self.screen)
+        self.shop_collision()
+        self.get_money()

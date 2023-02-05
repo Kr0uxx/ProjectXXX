@@ -6,11 +6,11 @@
 
 
                                            M
-               M             M              IXXXXXXXXJ
- IJP        C  IXJ          AA           E
+                                          IXXXXXXXXJ
+ IJP        C                       E
 MLR                                         IXXXXJ                    C
 IZZXJ                    AA           IXXXXJ            M                     S
- LR                                  IZR               IXXXJ
+ LR                                 IZR               IXXXJ
  L    E          M IXXXXJ
                  IXXXZZZR      E
   M IXXXXXXXXXXXXXZZZZZZZR  M            IJ    M

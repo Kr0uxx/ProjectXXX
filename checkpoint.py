@@ -18,8 +18,6 @@ class CheckPoint(pygame.sprite.Sprite):
         self.list_file = 'system files/checkpoints_list'
         self.active_point = open(self.active_file).read()
         self.points_list = open(self.list_file).read()
-        self.e_key_image = pygame.image.load('graphics\\display\\keys\\e_key.png')
-        self.e_key_image = pygame.transform.scale(self.e_key_image, (50, 50))
         self.points_display = PointsDisplay(screen)
 
     def set_point(self):
