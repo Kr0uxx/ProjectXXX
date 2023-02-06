@@ -13,6 +13,7 @@ class Mob(pygame.sprite.Sprite):
         self.x_pos = self.rect.x
         self.step_counter = self.rect.x
         self.enable_movement = False
+        self.health = 10
 
     def update(self, shift):
         self.rect.x += shift

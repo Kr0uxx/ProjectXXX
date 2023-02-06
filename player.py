@@ -7,6 +7,7 @@ width = 1000
 height = len(map1) * size_x
 size = width, height
 screen = pygame.display.set_mode(size)
+player_v = 10
 
 
 class Player(pygame.sprite.Sprite):
@@ -16,27 +17,32 @@ class Player(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(self.image, (100, 100))
         # self.image = pygame.transform.flip(self.image, True, False)
         self.rect = self.image.get_rect(topleft=pos)
-
+        self.ablob = 1
         self.vector = pygame.math.Vector2(0, 0)
-        self.v = 10
+        self.v = player_v
         # характеристики прыжка
         self.gravity = 0.3
         self.v_jump = -5
+        self.damage = 5
 
-    def get_key(self):
+    def move(self):
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_d]:
-            # if self.vector.x != 1:
-            #     self.image = pygame.transform.flip(self.image, True, False)
+        if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
             self.vector.x = 1
-        elif keys[pygame.K_a]:
-            # if self.vector.x != -1:
-            #     self.image = pygame.transform.flip(self.image, True, False)
+            self.ablob = 1
+            self.image = pygame.image.load('graphics\\Characters\\Hero\\idle\\frame-01.png')
+            self.image = pygame.transform.scale(self.image, (100, 100))
+        elif keys[pygame.K_LEFT] or keys[pygame.K_a]:
             self.vector.x = -1
+            self.ablob = 0
+            self.image = pygame.image.load('graphics\\Characters\\Hero\\idle\\frame-01.2.png')
+            self.image = pygame.transform.scale(self.image, (100, 100))
         else:
             self.vector.x = 0
-        if keys[pygame.K_SPACE]:
-            self.jump()
+
+    def attack(self, mob):
+        mob.health -= self.damage
+        print("enemy health:", mob.health)
 
     def with_gravity(self):
         self.vector.y += self.gravity
@@ -46,7 +52,26 @@ class Player(pygame.sprite.Sprite):
         self.vector.y = self.v_jump
 
     def update(self):
-        self.get_key()
+        self.move()
+
+
+class Collision(Player):
+    def __init__(self, pos, player):
+        super().__init__(pos)
+        self.width = 200
+        self.height = player.rect[3]
+        self.image = pygame.Surface((self.width, self.height))
+        self.rect = self.image.get_rect(topleft=pos)
+        self.image.fill("grey")
+        # self.vector = pygame.math.Vector2(0, 0)
+
+    def update(self, player):
+        if not player.ablob:
+            self.rect.x = player.rect.x + player.rect[2] - self.width
+            self.rect.y = player.rect.y
+        else:
+            self.rect.x = player.rect.x
+            self.rect.y = player.rect.y
 
 
 class PlayerStats:
@@ -64,5 +89,3 @@ class PlayerStats:
             pygame.mixer.Sound('music\\sounds\\death music.mp3').play()
         elif self.hp > 0:
             self.hp -= damage
-
-

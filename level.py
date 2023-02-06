@@ -1,5 +1,7 @@
 import pygame
-from player import Player
+
+from display import Display
+from player import Player, PlayerStats, Collision
 from mob import Mob
 from shop import Shop
 from checkpoint import CheckPoint
@@ -7,9 +9,21 @@ from checkpoint import CheckPoint
 map1 = open("maps/map1.txt").readlines()
 size_x = 50
 width = 1000
+f = open("maps//map1.txt", mode="rt")
+data = f.readlines()
+map_w = len(data[17]) * size_x
+height = len(data) * size_x
+f.close()
 status = 'start'
 hp = 100
 damage = 5
+up_counter = 0
+jump_state = False
+player_v = 10
+size = width, height
+screen = pygame.display.set_mode(size)
+player_stats = PlayerStats(status, 1000, 1000, damage)
+display = Display(screen, width, player_stats.hp, player_stats.mana)
 
 
 class Money(pygame.sprite.Sprite):
@@ -17,9 +31,20 @@ class Money(pygame.sprite.Sprite):
         super().__init__()
         self.image = pygame.Surface((30, 30))
         self.rect = self.image.get_rect(topleft=pos)
-        self.image.fill("orange")
+        self.images = []
+        for i in range(7):
+            self.images.append(
+                pygame.transform.scale(pygame.image.load(f'graphics\\Characters\\Hero\\idle\\coin-0{i + 1}.png'), (30, 30)))
+        self.n = 0
+        self.image = self.images[self.n]
 
     def update(self, shift):
+        #прокрутка списка изображений
+        self.n += 1
+        if self.n >= len(self.images):
+            self.n = 0
+        self.image = self.images[self.n]
+        #animation("money", "coin", 7, 30, 30)
         # сдвиг монеток при движении камеры
         self.rect.x += shift
 
@@ -79,6 +104,7 @@ class Level:
         self.platforms = pygame.sprite.Group()
         self.moneys = pygame.sprite.Group()
         self.player = pygame.sprite.GroupSingle()
+        self.collision = pygame.sprite.GroupSingle()
         self.mobs = pygame.sprite.Group()
         self.shops = pygame.sprite.Group()
         self.checkpoints = pygame.sprite.Group()
@@ -91,6 +117,8 @@ class Level:
                 elif c == "P":
                     player = Player((size_x * ind_c, size_x * ind_r))
                     self.player.add(player)
+                    collision = Collision((size_x * ind_c, size_x * ind_r), self.player.sprite)
+                    self.collision.add(collision)
                 elif c == "M":
                     money = Money((size_x * ind_c, size_x * ind_r))
                     self.moneys.add(money)
@@ -154,13 +182,41 @@ class Level:
         text = f.render(f"money: {str(self.money)}", True, (0, 0, 0))
         self.screen.blit(text, (20, 130))
 
+    def enemy_death(self):
+        player = self.player.sprite
+        for mob in self.mobs:
+            if pygame.sprite.collide_rect(mob, self.collision.sprite):
+                player.attack(mob)
+            if mob.health == 0:
+                mob.kill()
+                money = Money((mob.rect[0] + 50, mob.rect[1]))
+                self.moneys.add(money)
+                money = Money((mob.rect[0], mob.rect[1]))
+                self.moneys.add(money)
+                money = Money((mob.rect[0] - 50, mob.rect[1]))
+                self.moneys.add(money)
+
+    def jump_check(self):
+        global up_counter
+        global jump_state
+        player = self.player.sprite
+        for platform in self.platforms:
+            if player.rect.bottom == platform.rect.top:
+                jump_state = True
+                up_counter = 0
+        if up_counter != 2 and jump_state:
+            player.jump()
+            up_counter += 1
+        if up_counter == 2:
+            up_counter = 0
+            jump_state = False
+
     def enemy_attack(self):
         for mob in self.mobs:
-            if abs(mob.rect[0] - self.player.sprite.rect[0]) <= 200 and abs(
-                    mob.rect[1] - self.player.sprite.rect[1]) <= 50:
-                self.player_stats.get_damage(100)
-                self.display.hp_subtraction(100)
-                print(self.player_stats.hp)
+            if pygame.sprite.collide_rect(mob, self.collision.sprite):
+                player_stats.get_damage(100)
+                display.hp_subtraction(100)
+                print(player_stats.hp)
 
     def check_enemy(self):
         for mob in self.mobs:
@@ -185,12 +241,16 @@ class Level:
         self.platforms.draw(self.screen)
         self.moneys.update(self.camera)
         self.moneys.draw(self.screen)
+        # self.vertical_borders.draw(self.screen)
+        # self.vertical_borders.update(self.camera)
         self.camera_level()
         self.player.update()
+        self.collision.update(self.player.sprite)
         self.vertical()
         self.horizontal()
         self.get_money()
         self.check_enemy()
+        self.enemy_attack()
         self.open_checkpoint()
         self.mobs.update(self.camera)
         self.mobs.draw(self.screen)
@@ -199,3 +259,4 @@ class Level:
         self.checkpoints.update(self.camera)
         self.checkpoints.draw(self.screen)
         self.player.draw(self.screen)
+        #self.collision.draw(self.screen)

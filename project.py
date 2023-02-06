@@ -101,10 +101,13 @@ bg2 = pygame.transform.scale(bg2, (1000, 1080))
 bg3 = pygame.image.load("graphics\\background_layer_3.png")
 bg3 = pygame.transform.scale(bg3, (1000, 1080))
 while running:
-    level.attack_enabled = False
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_b:
+            level.enemy_death()
+        if event.type == pygame.KEYDOWN and (event.key == pygame.K_UP or event.key == pygame.K_SPACE or event.key == pygame.K_w):
+            level.jump_check()
         if event.type == pygame.KEYDOWN:
             if player_stats.status == 'game':
                 if event.key == pygame.K_ESCAPE:
@@ -126,10 +129,8 @@ while running:
             if event.key == pygame.K_y:
                 player_stats.get_damage(10)
                 display.hp_subtraction(10)
-            if event.key == pygame.K_e:
+            if event.key == pygame.K_q:
                 player_stats.status = 'dialog'
-        elif pygame.event == timer_event:
-            level.enemy_attack()
     if player_stats.status == 'death':
         pygame.mixer.music.stop()
         dead_screen.run()
