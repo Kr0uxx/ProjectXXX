@@ -89,6 +89,16 @@ class Platform(pygame.sprite.Sprite):
             self.image = pygame.transform.scale(self.image, (self.size, self.size))
 
 
+def cut_sheet(self, sheet, columns, rows):
+    self.rect = pygame.Rect(0, 0, sheet.get_width() // columns,
+                            sheet.get_height() // rows)
+    for j in range(rows):
+        for i in range(columns):
+            frame_location = (self.rect.w * i, self.rect.h * j)
+            self.frames.append(sheet.subsurface(pygame.Rect(
+                frame_location, self.rect.size)))
+
+
 class Level:
     def __init__(self, map2, screen, display, player_stats):
         self.screen = screen
@@ -98,7 +108,6 @@ class Level:
         self.display = display
         self.attack_enabled = False
         self.player_stats = player_stats
-
 
     def read(self, map2):
         self.platforms = pygame.sprite.Group()
