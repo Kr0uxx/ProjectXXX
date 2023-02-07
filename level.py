@@ -108,6 +108,7 @@ class Level:
         self.display = display
         self.attack_enabled = False
         self.player_stats = player_stats
+        self.attack_delay = 0
 
     def read(self, map2):
         self.platforms = pygame.sprite.Group()
@@ -223,9 +224,14 @@ class Level:
     def enemy_attack(self):
         for mob in self.mobs:
             if pygame.sprite.collide_rect(mob, self.collision.sprite):
-                player_stats.get_damage(100)
-                display.hp_subtraction(100)
-                print(player_stats.hp)
+                if self.attack_delay == 100:
+                    player_stats.get_damage(100)
+                    display.hp_subtraction(100)
+                    print(player_stats.hp)
+                    print(self.attack_delay)
+                    self.attack_delay = 0
+                else:
+                    self.attack_delay += 1
 
     def check_enemy(self):
         for mob in self.mobs:

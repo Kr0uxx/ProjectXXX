@@ -18,7 +18,7 @@ class Player(pygame.sprite.Sprite):
         self.image_run = pygame.image.load('graphics\\Characters\\Hero\\idle\\ChikBoy_run.png')
         self.image_run.set_colorkey((255, 255, 255))
         self.rect = self.image_idle.get_rect(topleft=pos)
-        self.ablob = 1
+        self.direction = 1
         self.vector = pygame.math.Vector2(0, 0)
         self.v = player_v
         # характеристики прыжка
@@ -60,13 +60,13 @@ class Player(pygame.sprite.Sprite):
             if not self.vector.x:
                 self.cur_frame = 0
             self.vector.x = 1
-            self.ablob = 1
+            self.direction = 1
             self.animate(self.image_run, 1, 10, self.rect.x, self.rect.y, False)
         elif keys[pygame.K_LEFT] or keys[pygame.K_a]:
             if not self.vector.x:
                 self.cur_frame = 0
             self.vector.x = -1
-            self.ablob = 0
+            self.direction = 0
             self.animate(self.image_run, 1, 10, self.rect.x, self.rect.y, True)
         else:
             if self.vector.x == -1:
@@ -104,7 +104,7 @@ class Collision(Player):
         # self.vector = pygame.math.Vector2(0, 0)
 
     def update(self, player):
-        if not player.ablob:
+        if not player.direction:
             self.rect.x = player.rect.x + player.rect[2] - self.width
             self.rect.y = player.rect.y
         else:
