@@ -147,10 +147,18 @@ while running:
             running = False
         if event.type == pygame.MOUSEMOTION:
             cursor.rect.topleft = event.pos
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if player_stats.status == 'game':
+                if event.button == 1:
+                    level.enemy_death()
         if event.type == pygame.KEYDOWN:
             if player_stats.status == 'game':
                 if event.key == pygame.K_ESCAPE:
                     player_stats.status = 'menu'
+                # говнокод снизу
+                if event.key == pygame.K_SPACE:
+                    level.jump_check()
+
             if player_stats.status == 'start':
                 if event.key == pygame.K_w:
                     start_screen.switch(-1)

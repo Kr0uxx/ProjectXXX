@@ -1,5 +1,5 @@
 import pygame
-from player import Player
+from player import Player, Collision
 from mob import Mob
 from shop import Shop
 from checkpoint import CheckPoint
@@ -80,6 +80,7 @@ class Level:
         self.platforms = pygame.sprite.Group()
         self.moneys = pygame.sprite.Group()
         self.player = pygame.sprite.GroupSingle()
+        self.collision = pygame.sprite.GroupSingle()
         self.mobs = pygame.sprite.Group()
         self.shops = pygame.sprite.Group()
         self.checkpoints = pygame.sprite.Group()
@@ -93,6 +94,8 @@ class Level:
                     # pos = size_x * ind_c, size_x * ind_r
                     player = Player(pos)
                     self.player.add(player)
+                    collision = Collision((size_x * ind_c, size_x * ind_r), self.player.sprite)
+                    self.collision.add(collision)
                 elif c == "M":
                     money = Money((size_x * ind_c, size_x * ind_r))
                     self.moneys.add(money)
@@ -183,6 +186,32 @@ class Level:
         self.shops.update(x)
         self.checkpoints.update(x)
 
+    # the worst code i`ve ever seen
+    def jump_check(self):
+        global up_counter
+        global jump_state
+        player = self.player.sprite
+        for platform in self.platforms:
+            if player.rect.bottom == platform.rect.top:
+                jump_state = True
+                up_counter = 0
+        if up_counter != 1 and jump_state:
+            player.jump()
+            up_counter += 1
+        if up_counter == 2:
+            up_counter = 0
+            jump_state = False
+
+    # говнокод, переписать
+    def enemy_death(self):
+        player = self.player.sprite
+        for mob in self.mobs:
+            if pygame.sprite.collide_rect(mob, self.collision.sprite):
+                player.attack(mob)
+            if mob.health == 0:
+                mob.kill()
+                money = Money((mob.rect[0] + 50, mob.rect[1]))
+
     def run(self):
         self.platforms.update(self.camera)
         self.platforms.draw(self.screen)
@@ -190,9 +219,9 @@ class Level:
         self.moneys.draw(self.screen)
         self.camera_level()
         self.player.update()
+        self.collision.update(self.player.sprite)
         self.vertical()
         self.horizontal()
-
         self.open_checkpoint()
         self.shops.update(self.camera)
         self.shops.draw(self.screen)
