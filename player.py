@@ -15,7 +15,9 @@ class Player(pygame.sprite.Sprite):
         super().__init__()
         self.image_idle = pygame.image.load('graphics\\Characters\\Hero\\idle\\ChikBoy_idle.png')
         self.image_idle.set_colorkey((255, 255, 255))
+        self.image_idle = pygame.transform.scale(self.image_idle, (100, 600))
         self.image_run = pygame.image.load('graphics\\Characters\\Hero\\idle\\ChikBoy_run.png')
+        self.image_run = pygame.transform.scale(self.image_run, (100, 1000))
         self.image_run.set_colorkey((255, 255, 255))
         self.rect = self.image_idle.get_rect(topleft=pos)
         self.direction = 1
@@ -39,7 +41,6 @@ class Player(pygame.sprite.Sprite):
         else:
             self.delay += 1
         self.image = self.frames[self.cur_frame]
-        self.image = pygame.transform.scale(self.image, (100, 100))
         if flip:
             self.image = pygame.transform.flip(self.image, True, False)
         self.image.set_colorkey((255, 255, 255))
