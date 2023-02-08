@@ -60,7 +60,7 @@ class Player(pygame.sprite.Sprite):
 class Collision(Player):
     def __init__(self, pos, player):
         super().__init__(pos)
-        self.width = 200
+        self.width = 100
         self.height = player.rect[3]
         self.image = pygame.Surface((self.width, self.height))
         self.rect = self.image.get_rect(topleft=pos)
@@ -70,10 +70,10 @@ class Collision(Player):
     def update(self, player):
         # self.rect.x = player.rect.x - (self.width - player.rect[2]) // 2
         if not player.ablob:
-            self.rect.x = player.rect.x + player.rect[2] - self.width
+            self.rect.x = player.rect.x + player.rect[2] - self.width - 100
             self.rect.y = player.rect.y
         else:
-            self.rect.x = player.rect.x
+            self.rect.x = player.rect.x + 100
             self.rect.y = player.rect.y
 
 

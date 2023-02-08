@@ -155,5 +155,5 @@ while running:
         time.sleep(2)
         player_stats.status = 'game'
     pygame.display.flip()
-    clock.tick(10)
+    clock.tick(144)
 pygame.quit()

@@ -115,6 +115,10 @@ class Level:
         self.mobs = pygame.sprite.Group()
         self.shops = pygame.sprite.Group()
         self.checkpoints = pygame.sprite.Group()
+        self.vert1 = Border(0, 0, 0, height)
+        self.vert2 = Border(map_w, 0, map_w, height)
+        self.vertical_borders.add(self.vert1)
+        self.vertical_borders.add(self.vert2)
         for ind_r, r in enumerate(map2):
             for ind_c, c in enumerate(r):
                 if c == "X" or c == "L" or c == "R" or c == "Z" or c == "I" or c == "J" or c == "A":
@@ -147,8 +151,8 @@ class Level:
         playery = player.rect.centery
         vectorx = player.vector.x
         vectory = player.vector.y
-        if (vert1.rect.x < width / 1000 or vert1.rect.x > width * 999 / 1000) and \
-                (vert2.rect.x < width / 1000 or vert2.rect.x > width * 999 / 1000):
+        if (self.vert1.rect.x < width / 1000 or self.vert1.rect.x > width * 999 / 1000) and \
+                (self.vert2.rect.x < width / 1000 or self.vert2.rect.x > width * 999 / 1000):
             if playerx <= width / 2 and vectorx < 0:
                 self.camera = player_v
                 player.v = 0
@@ -159,23 +163,23 @@ class Level:
                 self.camera = 0
                 player.v = player_v
         else:
-            if vert1.rect.x >= width / 1000 and playerx < width / 2:
+            if self.vert1.rect.x >= width / 1000 and playerx < width / 2:
                 self.camera = 0
                 player.v = player_v
-            elif vert2.rect.x <= width * 999 / 1000 and playerx > width / 2:
+            elif self.vert2.rect.x <= width * 999 / 1000 and playerx > width / 2:
                 self.camera = 0
                 player.v = -player_v
-            if vert1.rect.x >= width / 1000 and playerx > width / 2:
+            if self.vert1.rect.x >= width / 1000 and playerx > width / 2:
                 self.camera = -player_v
                 player.v = 0
-            elif vert2.rect.x <= width * 999 / 1000 and playerx < width / 2:
+            elif self.vert2.rect.x <= width * 999 / 1000 and playerx < width / 2:
                 self.camera = player_v
                 player.v = 0
             else:
                 self.camera = 0
-                if vert2.rect.x <= width * 999 / 1000:
+                if self.vert2.rect.x <= width * 999 / 1000:
                     player.v = player_v
-                elif vert1.rect.x >= width / 1000:
+                elif self.vert1.rect.x >= width / 1000:
                     player.v = player_v
 
     def vertical(self):
@@ -240,6 +244,13 @@ class Level:
             up_counter = 0
             jump_state = False
 
+    def lr_border(self):
+        player = self.player.sprite
+        if self.vert1.rect.colliderect(player.rect):
+            player.rect.left = self.vert1.rect.right
+        if self.vert2.rect.colliderect(player.rect):
+            player.rect.right = self.vert2.rect.left
+
     def open_checkpoint(self):
         player = self.player.sprite
         for point in self.checkpoints:
@@ -260,6 +271,7 @@ class Level:
         self.vertical()
         self.horizontal()
         self.get_money()
+        self.lr_border()
         self.open_checkpoint()
         self.mobs.update(self.camera)
         self.mobs.draw(self.screen)
@@ -268,15 +280,14 @@ class Level:
         self.checkpoints.update(self.camera)
         self.checkpoints.draw(self.screen)
         self.player.draw(self.screen)
-        #self.collision.draw(self.screen)
+        self.collision.draw(self.screen)
 
 
 class Border(pygame.sprite.Sprite):
     def __init__(self, x1, y1, x2, y2):
         super().__init__()
         if x1 == x2:  # вертикальная стенка
-            self.add(level.vertical_borders)
-            self.image = pygame.Surface([10, y2 - y1])
+            self.image = pygame.Surface([0.5, y2 - y1])
             self.rect = pygame.Rect(x1, y1, 1, y2 - y1)
 
     def update(self, shift):
@@ -286,5 +297,3 @@ class Border(pygame.sprite.Sprite):
 size = width, height
 screen = pygame.display.set_mode(size)
 level = Level(map1, screen)
-vert1 = Border(0, 0, 0, height)
-vert2 = Border(map_w, 0, map_w, height)
