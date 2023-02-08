@@ -4,6 +4,7 @@ from mob import Mob
 from shop import Shop
 from checkpoint import CheckPoint
 from checkpoints_display import PointsDisplay
+from random import randint
 
 map1 = open("maps/map1.txt").readlines()
 size_x = 50
@@ -203,14 +204,16 @@ class Level:
             jump_state = False
 
     # говнокод, переписать
-    def enemy_death(self):
+    def enemy_hurt(self):
         player = self.player.sprite
         for mob in self.mobs:
             if pygame.sprite.collide_rect(mob, self.collision.sprite):
                 player.attack(mob)
             if mob.health == 0:
                 mob.kill()
-                money = Money((mob.rect[0] + 50, mob.rect[1]))
+                for i in range(randint(1, 3)):
+                    money = Money((mob.rect[0] + randint(0, 50), mob.rect[1]))
+                    self.moneys.add(money)
 
     def run(self):
         self.platforms.update(self.camera)

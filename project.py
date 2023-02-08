@@ -150,7 +150,7 @@ while running:
         if event.type == pygame.MOUSEBUTTONDOWN:
             if player_stats.status == 'game':
                 if event.button == 1:
-                    level.enemy_death()
+                    level.enemy_hurt()
         if event.type == pygame.KEYDOWN:
             if player_stats.status == 'game':
                 if event.key == pygame.K_ESCAPE:

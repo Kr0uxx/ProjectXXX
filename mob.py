@@ -1,4 +1,5 @@
 import pygame
+from random import randint
 
 
 class Mob(pygame.sprite.Sprite):
@@ -13,3 +14,4 @@ class Mob(pygame.sprite.Sprite):
 
     def update(self, shift):
         self.rect.x += shift
+
