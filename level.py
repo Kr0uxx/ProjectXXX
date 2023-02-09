@@ -1,10 +1,12 @@
 import pygame
-from player import Player, Collision
+from player import Player, Collision, PlayerStats
 from mob import Mob
+from boss import Boss
 from shop import Shop
 from checkpoint import CheckPoint
 from checkpoints_display import PointsDisplay
 from random import randint
+from display import Display
 
 map1 = open("maps/map1.txt").readlines()
 size_x = 50
@@ -12,6 +14,8 @@ width = 1500
 status = 'start'
 hp = 100
 damage = 5
+up_counter = 0
+jump_state = False
 
 
 class Money(pygame.sprite.Sprite):
@@ -19,9 +23,19 @@ class Money(pygame.sprite.Sprite):
         super().__init__()
         self.image = pygame.Surface((30, 30))
         self.rect = self.image.get_rect(topleft=pos)
-        self.image.fill("orange")
+        self.images = []
+        for i in range(7):
+            self.images.append(
+                pygame.transform.scale(pygame.image.load(f'graphics\\props\\coin\\coin-0{i + 1}.png'),
+                                       (30, 30)))
+        self.n = 0
+        self.image = self.images[self.n]
 
     def update(self, shift):
+        self.n += 1
+        if self.n >= len(self.images):
+            self.n = 0
+        self.image = self.images[self.n]
         # сдвиг монеток при движении камеры
         self.rect.x += shift
 
@@ -66,6 +80,16 @@ class Platform(pygame.sprite.Sprite):
             self.image = pygame.transform.scale(self.image, (self.size, self.size))
 
 
+def cut_sheet(self, sheet, columns, rows):
+    self.rect = pygame.Rect(0, 0, sheet.get_width() // columns,
+                            sheet.get_height() // rows)
+    for j in range(rows):
+        for i in range(columns):
+            frame_location = (self.rect.w * i, self.rect.h * j)
+            self.frames.append(sheet.subsurface(pygame.Rect(
+                frame_location, self.rect.size)))
+
+
 class Level:
     def __init__(self, map2, screen, player_status):
         self.screen = screen
@@ -76,6 +100,9 @@ class Level:
         self.points_display = PointsDisplay(screen)
         self.e_key_image = pygame.image.load('graphics\\display\\keys\\e_key.png')
         self.e_key_image = pygame.transform.scale(self.e_key_image, (50, 50))
+        self.player_stats = PlayerStats(status, 1000, 1000, damage)
+        self.display = Display(screen, width, self.player_stats.hp, self.player_stats.mana)
+        self.attack_enabled = False
 
     def read(self, map2, pos=(150, 450)):
         self.platforms = pygame.sprite.Group()
@@ -83,6 +110,7 @@ class Level:
         self.player = pygame.sprite.GroupSingle()
         self.collision = pygame.sprite.GroupSingle()
         self.mobs = pygame.sprite.Group()
+        self.boss = pygame.sprite.GroupSingle()
         self.shops = pygame.sprite.Group()
         self.checkpoints = pygame.sprite.Group()
         for ind_r, r in enumerate(map2):
@@ -103,6 +131,9 @@ class Level:
                 elif c == 'E':
                     enemy = Mob((size_x * ind_c, size_x * ind_r))
                     self.mobs.add(enemy)
+                elif c == 'B':
+                    boss = Boss((size_x * ind_c, size_x * ind_r))
+                    self.boss.add(boss)
                 elif c == 'S':
                     shop = Shop((size_x * ind_c, size_x * ind_r), self.screen)
                     self.shops.add(shop)
@@ -215,23 +246,68 @@ class Level:
                     money = Money((mob.rect[0] + randint(0, 50), mob.rect[1]))
                     self.moneys.add(money)
 
+    def enemy_attack(self):
+        for mob in self.mobs:
+            if pygame.sprite.collide_rect(mob, self.collision.sprite):
+                mob.v = 0
+                mob.lever_attack = True
+                if mob.attack_delay == 30:
+                    self.player_stats.get_damage(mob.damage)
+                    self.display.hp_subtraction(mob.damage)
+                    print(self.player_stats.hp)
+                    print(mob.attack_delay)
+                    mob.attack_delay = 0
+                else:
+                    mob.attack_delay += 1
+            else:
+                if mob.lever_attack:
+                    mob.v = 3
+                    mob.lever_attack = False
+                mob.attack_delay = 0
+
+    def check_enemy(self):
+        for mob in self.mobs:
+            if mob.x_pos + 60 < mob.step_counter:
+                mob.v = -3
+                mob.image = pygame.transform.flip(mob.image, True, False)
+            if mob.x_pos - 60 >= mob.step_counter:
+                mob.v = 3
+                mob.image = pygame.transform.flip(mob.image, True, False)
+            mob.rect.x += mob.v
+            mob.step_counter += mob.v
+
     def run(self):
+        # 1 слой - камера, тайлы
+        self.camera_level()
         self.platforms.update(self.camera)
         self.platforms.draw(self.screen)
+
+        # 2 слой - пропсы
         self.moneys.update(self.camera)
         self.moneys.draw(self.screen)
-        self.camera_level()
+
+        self.checkpoints.update(self.camera)
+        self.checkpoints.draw(self.screen)
+        # 3 слой мобы, нпс
+        self.mobs.update(self.camera)
+        self.mobs.draw(self.screen)
+        self.boss.draw(self.screen)
+
+        self.shops.update(self.camera)
+        self.shops.draw(self.screen)
+
+        # 4 слой - игрок
         self.player.update()
+        self.player.draw(self.screen)
         self.collision.update(self.player.sprite)
         self.vertical()
         self.horizontal()
-        self.open_checkpoint()
-        self.shops.update(self.camera)
-        self.shops.draw(self.screen)
-        self.mobs.update(self.camera)
-        self.mobs.draw(self.screen)
-        self.checkpoints.update(self.camera)
-        self.checkpoints.draw(self.screen)
-        self.player.draw(self.screen)
+        # 5 слой - функции
         self.shop_collision()
         self.get_money()
+        self.open_checkpoint()
+        self.enemy_attack()
+        self.check_enemy()
+
+        # 6 слой дисплей
+        self.display.run()

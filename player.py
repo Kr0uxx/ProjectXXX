@@ -12,31 +12,71 @@ screen = pygame.display.set_mode(size)
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos):
         super().__init__()
-        self.image = pygame.image.load('graphics\\Characters\\Hero\\idle\\frame-01.png')
-        self.image = pygame.transform.scale(self.image, (100, 100))
-        self.rect = self.image.get_rect(topleft=pos)
-        self.orientation = 'right'
+        self.image_idle = pygame.image.load('graphics\\Characters\\Hero\\idle\\idle_asset.png')
+        self.image_idle = pygame.transform.scale(self.image_idle, (100, 600))
+        self.image_idle.set_colorkey((255, 255, 255))
+        self.image_run = pygame.image.load('graphics\\Characters\\Hero\\run\\run_asset.png')
+        self.image_run.set_colorkey((255, 255, 255))
+        self.image_run = pygame.transform.scale(self.image_run, (100, 1000))
+        self.rect = self.image_idle.get_rect(topleft=pos)
         self.vector = pygame.math.Vector2(0, 0)
         self.v = 10
+        self.orientation = 'right'
         # характеристики прыжка
         self.gravity = 2
         self.v_jump = -35
         self.damage = 5
+        self.cur_frame = 0
+        self.delay = 0
+        self.prev_vector = False
+        self.animate(self.image_idle, 1, 6, self.rect.x, self.rect.y, False)
+
+    def animate(self, sheet, columns, rows, x, y, flip):
+        self.frames = []
+        self.cut_sheet(sheet, columns, rows)
+        if self.delay == 3:
+            self.cur_frame = (self.cur_frame + 1) % len(self.frames)
+            self.delay = 0
+        else:
+            self.delay += 1
+        self.image = self.frames[self.cur_frame]
+        if flip:
+            self.image = pygame.transform.flip(self.image, True, False)
+        self.image.set_colorkey((255, 255, 255))
+        self.rect = self.rect.move(x, y)
+
+    def cut_sheet(self, sheet, columns, rows):
+        self.rect = pygame.Rect(0, 0, sheet.get_width() // columns,
+                                sheet.get_height() // rows)
+        for j in range(rows):
+            for i in range(columns):
+                frame_location = (self.rect.w * i, self.rect.h * j)
+                self.frames.append(sheet.subsurface(pygame.Rect(
+                    frame_location, self.rect.size)))
 
     def get_key(self):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_d]:
-            self.vector.x = 1
-            if self.orientation == 'left':
-                self.image = pygame.transform.flip(self.image, True, False)
+            if not self.vector.x:
+                self.cur_frame = 0
             self.orientation = 'right'
+            self.vector.x = 1
+            self.animate(self.image_run, 1, 10, self.rect.x, self.rect.y, False)
         elif keys[pygame.K_a]:
-            self.vector.x = -1
-            if self.orientation == 'right':
-                self.image = pygame.transform.flip(self.image, True, False)
+            if not self.vector.x:
+                self.cur_frame = 0
             self.orientation = 'left'
+            self.vector.x = -1
+            self.animate(self.image_run, 1, 10, self.rect.x, self.rect.y, True)
         else:
+            if self.vector.x == -1:
+                self.prev_vector = True
+                self.cur_frame = 0
+            if self.vector.x == 1:
+                self.prev_vector = False
+                self.cur_frame = 0
             self.vector.x = 0
+            self.animate(self.image_idle, 1, 6, self.rect.x, self.rect.y, self.prev_vector)
         '''if keys[pygame.K_SPACE]:
             self.jump()'''
 
@@ -69,6 +109,7 @@ class PlayerStats:
             self.status = 'death'
             pygame.mixer.Sound('music\\sounds\\death music.mp3').play()
         elif self.hp > 0:
+            pygame.mixer.Sound('music\\sounds\\hurt_sound.wav').play()
             self.hp -= damage
 
 

@@ -9,4 +9,5 @@ class Shop(NPC):
         self.image = pygame.transform.scale(self.image, (250, 250))
         self.active_dialog = 2
 
+    # def display(self):
 

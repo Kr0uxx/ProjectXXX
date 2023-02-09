@@ -18,6 +18,7 @@ status = 'start'
 
 # карта для уровня
 map1 = open("maps/map1.txt").readlines()
+map_boss = open("maps/map_boss").readlines()
 active_map = map1
 
 # музыка
@@ -34,20 +35,20 @@ def music(music_name, volume=0.3, loops=-1):
 music(start_screen_theme)
 size_x = 50
 width = 1500
-height = len(map1) * size_x
+height = len(active_map) * size_x
 damage = 5
 
 size = width, height
 screen = pygame.display.set_mode(size)
 clock = pygame.time.Clock()
 player_stats = PlayerStats(status, 1000, 1000, damage)
-level = Level(map1, screen, player_stats.status)
+level = Level(active_map, screen, player_stats.status)
 
 display = Display(screen, width, player_stats.hp, player_stats.mana)
 dialog = Dialog(screen)
 
 # игрок
-player = Player(level.read(map1))
+player = Player(level.read(active_map))
 player_sprite = pygame.sprite.GroupSingle()
 player_sprite.add(player)
 
@@ -182,16 +183,6 @@ while running:
                     points_display.switch(1)
                 elif event.key == pygame.K_RETURN:
                     points_display.select()
-            '''if player_stats.status == 'dialog':
-                print('a0')
-                if event.key == pygame.K_e and dialog.lever:
-                    dialog.replicas += 1
-                    dialog.lever = False'''
-            if event.key == pygame.K_y:
-                player_stats.get_damage(10)
-                display.hp_subtraction(10)
-            if event.key == pygame.K_q:
-                player_stats.status = 'dialog'
     if player_stats.status == 'death':
         pygame.mixer.music.stop()
         dead_screen.run()
@@ -206,7 +197,6 @@ while running:
         level.run()
         if level.open_checkpoint():
             player_stats.status = 'point'
-        display.run()
     elif player_stats.status == 'start':
         start_screen.run(50, 350, 165)
     elif player_stats.status == 'menu':
@@ -217,5 +207,5 @@ while running:
     if pygame.mouse.get_focused():
         all_sprites.draw(screen)
     pygame.display.flip()
-    clock.tick(60)
+    clock.tick(144)
 pygame.quit()
