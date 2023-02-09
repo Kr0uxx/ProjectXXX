@@ -1,14 +1,12 @@
 import pygame
+from NPC import NPC
 
 
-class Shop(pygame.sprite.Sprite):
-    def __init__(self, pos):
-        super().__init__()
+class Shop(NPC):
+    def __init__(self, pos, screen):
+        super().__init__(pos, screen)
         self.image = pygame.image.load('graphics\\Characters\\Shop\\shop.png')
         self.image = pygame.transform.scale(self.image, (250, 250))
-        self.rect = self.image.get_rect(topleft=pos)
-        self.vector = pygame.math.Vector2(0, 0)
-        self.v = 5
+        self.active_dialog = 2
 
-    def update(self, shift):
-        self.rect.x += shift
+

@@ -14,6 +14,7 @@ class Display:
         self.bar_img = pygame.image.load("graphics\\display\\bar.png")
         self.bar_img = pygame.transform.scale(self.bar_img, (300, 100))
 
+
     def hp_subtraction(self, damage):
         self.hp_percent -= damage * 100 / self.max_hp
         self.width_hp = 239 * self.hp_percent * 0.01

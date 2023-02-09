@@ -5,34 +5,34 @@ global running
 
 
 class StartScreen:
-    def __init__(self, screen):
+    def __init__(self, screen, width):
         self._options = []
         self._callbacks = []
         self._current_option_index = 0
         self.layer0 = pygame.image.load("graphics\\Layer_0011_0.png")
-        self.layer0 = pygame.transform.scale(self.layer0, (1000, 1380))
+        self.layer0 = pygame.transform.scale(self.layer0, (width, 1380))
         self.layer1 = pygame.image.load("graphics\\Layer_0010_1.png")
-        self.layer1 = pygame.transform.scale(self.layer1, (1000, 1380))
+        self.layer1 = pygame.transform.scale(self.layer1, (width, 1380))
         self.layer2 = pygame.image.load("graphics\\Layer_0009_2.png")
-        self.layer2 = pygame.transform.scale(self.layer2, (1000, 1380))
+        self.layer2 = pygame.transform.scale(self.layer2, (width, 1380))
         self.layer3 = pygame.image.load("graphics\\Layer_0008_3.png")
-        self.layer3 = pygame.transform.scale(self.layer3, (1000, 1380))
+        self.layer3 = pygame.transform.scale(self.layer3, (width, 1380))
         self.layer4 = pygame.image.load("graphics\\Layer_0007_Lights.png")
-        self.layer4 = pygame.transform.scale(self.layer4, (1000, 1380))
+        self.layer4 = pygame.transform.scale(self.layer4, (width, 1380))
         self.layer5 = pygame.image.load("graphics\\Layer_0006_4.png")
-        self.layer5 = pygame.transform.scale(self.layer5, (1000, 1380))
+        self.layer5 = pygame.transform.scale(self.layer5, (width, 1380))
         self.layer6 = pygame.image.load("graphics\\Layer_0005_5.png")
-        self.layer6 = pygame.transform.scale(self.layer6, (1000, 1380))
+        self.layer6 = pygame.transform.scale(self.layer6, (width, 1380))
         self.layer7 = pygame.image.load("graphics\\Layer_0004_Lights.png")
-        self.layer7 = pygame.transform.scale(self.layer7, (1000, 1380))
+        self.layer7 = pygame.transform.scale(self.layer7, (width, 1380))
         self.layer8 = pygame.image.load("graphics\\Layer_0003_6.png")
-        self.layer8 = pygame.transform.scale(self.layer8, (1000, 1380))
+        self.layer8 = pygame.transform.scale(self.layer8, (width, 1380))
         self.layer9 = pygame.image.load("graphics\\Layer_0002_7.png")
-        self.layer9 = pygame.transform.scale(self.layer9, (1000, 1380))
+        self.layer9 = pygame.transform.scale(self.layer9, (width, 1380))
         self.layer10 = pygame.image.load("graphics\\Layer_0001_8.png")
-        self.layer10 = pygame.transform.scale(self.layer10, (1000, 1380))
+        self.layer10 = pygame.transform.scale(self.layer10, (width, 1380))
         self.layer11 = pygame.image.load("graphics\\Layer_0000_9.png")
-        self.layer11 = pygame.transform.scale(self.layer11, (1000, 1380))
+        self.layer11 = pygame.transform.scale(self.layer11, (width, 1380))
         self.music = 'music\\start screen theme.mp3'
         self.screen = screen
 
