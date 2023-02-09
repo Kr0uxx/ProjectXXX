@@ -13,14 +13,17 @@ player_v = 10
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos):
         super().__init__()
-        self.image_idle = pygame.image.load('graphics\\Characters\\Hero\\idle\\ChikBoy_idle.png')
-        self.image_idle.set_colorkey((255, 255, 255))
-        self.image_idle = pygame.transform.scale(self.image_idle, (100, 600))
-        self.image_run = pygame.image.load('graphics\\Characters\\Hero\\idle\\ChikBoy_run.png')
-        self.image_run = pygame.transform.scale(self.image_run, (100, 1000))
-        self.image_run.set_colorkey((255, 255, 255))
-        self.rect = self.image_idle.get_rect(topleft=pos)
+        self.idle_images = []
+        for i in range(6):
+            self.idle_images.append(pygame.image.load(f'graphics\\Characters\\Hero\\idle\\ChikIdle\\ChikIdle_frame{i}.png'))
+        self.rect = pygame.image.load('graphics\\Characters\\Hero\\idle\\ChikIdle\\ChikIdle_frame0.png').get_rect(topleft=pos)
+        self.rect[2] = 50
+        self.rect[3] = 100
+        self.run_images = []
+        for i in range(10):
+            self.run_images.append(pygame.image.load(f'graphics\\Characters\\Hero\\idle\\ChikRun\\ChikRun_frame{i}.png'))
         self.direction = 1
+        self.platforms = pygame.sprite.Group()
         self.vector = pygame.math.Vector2(0, 0)
         self.v = player_v
         # характеристики прыжка
@@ -30,30 +33,19 @@ class Player(pygame.sprite.Sprite):
         self.cur_frame = 0
         self.delay = 0
         self.prev_vector = False
-        self.animate(self.image_idle, 1, 6, self.rect.x, self.rect.y, False)
+        self.animate(self.idle_images, 6, False)
 
-    def animate(self, sheet, columns, rows, x, y, flip):
-        self.frames = []
-        self.cut_sheet(sheet, columns, rows)
+    def animate(self, sheet, num, flip):
         if self.delay == 3:
-            self.cur_frame = (self.cur_frame + 1) % len(self.frames)
+            self.cur_frame = (self.cur_frame + 1) % num
             self.delay = 0
         else:
             self.delay += 1
-        self.image = self.frames[self.cur_frame]
+        self.image = sheet[self.cur_frame]
+        self.image = pygame.transform.scale(self.image, (50, 100))
         if flip:
             self.image = pygame.transform.flip(self.image, True, False)
         self.image.set_colorkey((255, 255, 255))
-        self.rect = self.rect.move(x, y)
-
-    def cut_sheet(self, sheet, columns, rows):
-        self.rect = pygame.Rect(0, 0, sheet.get_width() // columns,
-                                sheet.get_height() // rows)
-        for j in range(rows):
-            for i in range(columns):
-                frame_location = (self.rect.w * i, self.rect.h * j)
-                self.frames.append(sheet.subsurface(pygame.Rect(
-                    frame_location, self.rect.size)))
 
     def move(self):
         keys = pygame.key.get_pressed()
@@ -62,13 +54,13 @@ class Player(pygame.sprite.Sprite):
                 self.cur_frame = 0
             self.vector.x = 1
             self.direction = 1
-            self.animate(self.image_run, 1, 10, self.rect.x, self.rect.y, False)
+            self.animate(self.run_images, 10, False)
         elif keys[pygame.K_LEFT] or keys[pygame.K_a]:
             if not self.vector.x:
                 self.cur_frame = 0
             self.vector.x = -1
             self.direction = 0
-            self.animate(self.image_run, 1, 10, self.rect.x, self.rect.y, True)
+            self.animate(self.run_images, 10, True)
         else:
             if self.vector.x == -1:
                 self.prev_vector = True
@@ -77,7 +69,7 @@ class Player(pygame.sprite.Sprite):
                 self.prev_vector = False
                 self.cur_frame = 0
             self.vector.x = 0
-            self.animate(self.image_idle, 1, 6, self.rect.x, self.rect.y, self.prev_vector)
+            self.animate(self.idle_images, 6, self.prev_vector)
 
     def attack(self, mob):
         mob.health -= self.damage

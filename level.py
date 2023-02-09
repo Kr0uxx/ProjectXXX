@@ -235,14 +235,15 @@ class Level:
 
     def check_enemy(self):
         for mob in self.mobs:
-            if mob.x_pos + 60 <= mob.step_counter:
-                mob.v = -3
-                mob.image = pygame.transform.flip(mob.image, True, False)
-            if mob.x_pos - 60 >= mob.step_counter:
-                mob.v = 3
-                mob.image = pygame.transform.flip(mob.image, True, False)
-            mob.rect.x += mob.v
-            mob.step_counter += mob.v
+            if not pygame.sprite.collide_rect(mob, self.collision.sprite):
+                if mob.x_pos + 60 <= mob.step_counter:
+                    mob.v = -3
+                    mob.image = pygame.transform.flip(mob.image, True, False)
+                if mob.x_pos - 60 >= mob.step_counter:
+                    mob.v = 3
+                    mob.image = pygame.transform.flip(mob.image, True, False)
+                mob.rect.x += mob.v
+                mob.step_counter += mob.v
 
     def open_checkpoint(self):
         player = self.player.sprite
@@ -274,4 +275,3 @@ class Level:
         self.checkpoints.update(self.camera)
         self.checkpoints.draw(self.screen)
         self.player.draw(self.screen)
-        #self.collision.draw(self.screen)
