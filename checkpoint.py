@@ -8,8 +8,9 @@ checkpoints = {(600, 450): '1',
 class CheckPoint(pygame.sprite.Sprite):
     def __init__(self, pos, screen):
         super().__init__()
-        self.image = pygame.image.load('graphics\\checkpoint\\frame-01.png')
-        self.image = pygame.transform.scale(self.image, (100, 290))
+        self.delay = 0
+        self.cur_frame = 0
+        self.image = pygame.Surface((100, 290))
         self.rect = self.image.get_rect(topleft=pos)
         self.pos = pos
         self.vector = pygame.math.Vector2(0, 0)
@@ -19,6 +20,7 @@ class CheckPoint(pygame.sprite.Sprite):
         self.active_point = open(self.active_file).read()
         self.points_list = open(self.list_file).read()
         self.points_display = PointsDisplay(screen)
+        self.images = [pygame.image.load(f'graphics\\checkpoint\\frame-{i + 1}.png') for i in range(13)]
 
     def set_point(self):
         with open("system files/active_checkpoint", "wt", encoding="utf8") as to_active_point, open(
@@ -43,4 +45,17 @@ class CheckPoint(pygame.sprite.Sprite):
         return True
 
     def update(self, shift):
+        self.animate(self.images, 13, False)
         self.rect.x += shift
+
+    def animate(self, sheet, num, flip):
+        if self.delay == 2:
+            self.cur_frame = (self.cur_frame + 1) % num
+            self.delay = 0
+        else:
+            self.delay += 1
+        self.image = sheet[self.cur_frame]
+        self.image = pygame.transform.scale(self.image, (100, 290))
+        if flip:
+            self.image = pygame.transform.flip(self.image, True, False)
+        self.image.set_colorkey((255, 255, 255))

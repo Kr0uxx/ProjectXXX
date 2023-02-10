@@ -152,6 +152,11 @@ while running:
             if player_stats.status == 'game':
                 if event.button == 1:
                     level.enemy_hurt()
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_b:
+            level.player.sprite.status = 'attack'
+            level.enemy_hurt()
+        if event.type == pygame.KEYDOWN and (event.key == pygame.K_UP or event.key == pygame.K_SPACE or event.key == pygame.K_w):
+            level.jump_check()
         if event.type == pygame.KEYDOWN:
             if player_stats.status == 'game':
                 if event.key == pygame.K_ESCAPE:
