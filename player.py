@@ -3,7 +3,7 @@ from dead_screen import DeadScreen
 
 map1 = open("maps/map1.txt").readlines()
 size_x = 50
-width = 1500
+width = 1920
 height = len(map1) * size_x
 size = width, height
 screen = pygame.display.set_mode(size)

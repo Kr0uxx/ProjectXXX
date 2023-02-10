@@ -34,7 +34,7 @@ def music(music_name, volume=0.3, loops=-1):
 
 music(start_screen_theme)
 size_x = 50
-width = 1500
+width = 1920
 height = len(active_map) * size_x
 damage = 5
 

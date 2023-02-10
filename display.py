@@ -13,6 +13,11 @@ class Display:
         self.screen = screen
         self.bar_img = pygame.image.load("graphics\\display\\bar.png")
         self.bar_img = pygame.transform.scale(self.bar_img, (300, 100))
+        self.location_panel = pygame.image.load("graphics\\display\\TitlePanel02.png")
+        self.location_panel = pygame.transform.scale(self.location_panel, (300, 40))
+        self.location = 'City of the sun'
+        self.f = pygame.font.Font('dialogs\\fonts\\DungeonFont.ttf', 30)
+        self.text = self.f.render(self.location, True, (255, 255, 255))
 
 
     def hp_subtraction(self, damage):
@@ -33,3 +38,5 @@ class Display:
         pygame.draw.rect(self.screen, (0, 120, 176),
                          (34, 68, self.width_mana, self.height_mana))
         self.screen.blit(self.bar_img, (3, 3))
+        self.screen.blit(self.location_panel, (3, 120))
+        self.screen.blit(self.text, (60, 125))
