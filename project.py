@@ -105,6 +105,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         if event.type == pygame.KEYDOWN and event.key == pygame.K_b:
+            level.player.sprite.status = 'attack'
             level.enemy_death()
         if event.type == pygame.KEYDOWN and (event.key == pygame.K_UP or event.key == pygame.K_SPACE or event.key == pygame.K_w):
             level.jump_check()

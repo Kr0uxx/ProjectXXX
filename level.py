@@ -1,7 +1,7 @@
 import pygame
 
 from display import Display
-from player import Player, PlayerStats, Collision
+from player import Player, PlayerStats, Collision, Effect
 from mob import Mob
 from shop import Shop
 from checkpoint import CheckPoint
@@ -34,17 +34,18 @@ class Money(pygame.sprite.Sprite):
         self.images = []
         for i in range(7):
             self.images.append(
-                pygame.transform.scale(pygame.image.load(f'graphics\\Characters\\Hero\\idle\\coin-0{i + 1}.png'), (30, 30)))
+                pygame.transform.scale(pygame.image.load(f'graphics\\Characters\\Hero\\idle\\coin-0{i + 1}.png'),
+                                       (30, 30)))
         self.n = 0
         self.image = self.images[self.n]
 
     def update(self, shift):
-        #прокрутка списка изображений
+        # прокрутка списка изображений
         self.n += 1
         if self.n >= len(self.images):
             self.n = 0
         self.image = self.images[self.n]
-        #animation("money", "coin", 7, 30, 30)
+        # animation("money", "coin", 7, 30, 30)
         # сдвиг монеток при движении камеры
         self.rect.x += shift
 
@@ -89,16 +90,6 @@ class Platform(pygame.sprite.Sprite):
             self.image = pygame.transform.scale(self.image, (self.size, self.size))
 
 
-def cut_sheet(self, sheet, columns, rows):
-    self.rect = pygame.Rect(0, 0, sheet.get_width() // columns,
-                            sheet.get_height() // rows)
-    for j in range(rows):
-        for i in range(columns):
-            frame_location = (self.rect.w * i, self.rect.h * j)
-            self.frames.append(sheet.subsurface(pygame.Rect(
-                frame_location, self.rect.size)))
-
-
 class Level:
     def __init__(self, map2, screen, display, player_stats):
         self.screen = screen
@@ -115,6 +106,7 @@ class Level:
         self.moneys = pygame.sprite.Group()
         self.player = pygame.sprite.GroupSingle()
         self.collision = pygame.sprite.GroupSingle()
+        self.effect = pygame.sprite.GroupSingle()
         self.mobs = pygame.sprite.Group()
         self.shops = pygame.sprite.Group()
         self.checkpoints = pygame.sprite.Group()
@@ -129,6 +121,9 @@ class Level:
                     self.player.add(player)
                     collision = Collision((size_x * ind_c, size_x * ind_r), self.player.sprite)
                     self.collision.add(collision)
+                    effect = Effect((size_x * ind_c, size_x * ind_r))
+                    self.effect.add(effect)
+                    self.player.effect = self.effect
                 elif c == "M":
                     money = Money((size_x * ind_c, size_x * ind_r))
                     self.moneys.add(money)
@@ -262,6 +257,7 @@ class Level:
         self.camera_level()
         self.player.update()
         self.collision.update(self.player.sprite)
+        self.effect.update(self.player.sprite)
         self.vertical()
         self.horizontal()
         self.get_money()
@@ -275,3 +271,11 @@ class Level:
         self.checkpoints.update(self.camera)
         self.checkpoints.draw(self.screen)
         self.player.draw(self.screen)
+        if self.player.sprite.status == 'attack':
+            if not self.player.sprite.direction:
+                self.effect.sprite.animate_effect('graphics\\effects\\attack effects\\SFX301', 5, False)
+            else:
+                self.effect.sprite.animate_effect('graphics\\effects\\attack effects\\SFX301', 5, True)
+            self.effect.draw(self.screen)
+            if self.effect.sprite.cur_frame == 4:
+                self.player.sprite.status = 'stand'

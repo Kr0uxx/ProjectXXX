@@ -24,15 +24,24 @@ class Player(pygame.sprite.Sprite):
             self.run_images.append(pygame.image.load(f'graphics\\Characters\\Hero\\idle\\ChikRun\\ChikRun_frame{i}.png'))
         self.direction = 1
         self.platforms = pygame.sprite.Group()
+        self.plat_rects = [platform.rect for platform in self.platforms]
         self.vector = pygame.math.Vector2(0, 0)
         self.v = player_v
         # характеристики прыжка
         self.gravity = 0.3
         self.v_jump = -5
         self.damage = 5
+        # self.attack_effect = Effect((pos[0] + 20, pos[1] + 20), 'graphics\\effects\\attack effects\\SFX301_', 5)
+        # self.rect = self.attack_image.get_rect(topleft=pos)
+        # self.attack_images = []
+        # for i in range(5):
+        #     self.attack_images.append(
+        #         pygame.transform.scale(pygame.image.load(f'graphics\\effects\\attack effects\\SFX301_frame{i}.png'), (30, 30)))
         self.cur_frame = 0
         self.delay = 0
         self.prev_vector = False
+        self.status = 'stand'
+        self.effect = pygame.sprite.GroupSingle
         self.animate(self.idle_images, 6, False)
 
     def animate(self, sheet, num, flip):
@@ -49,18 +58,23 @@ class Player(pygame.sprite.Sprite):
 
     def move(self):
         keys = pygame.key.get_pressed()
+        print(self.status)
+        if pygame.sprite.spritecollideany(self, self.platforms):
+            self.status = 'jump'
         if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
             if not self.vector.x:
                 self.cur_frame = 0
             self.vector.x = 1
             self.direction = 1
-            self.animate(self.run_images, 10, False)
+            if self.status != 'jump':
+                self.animate(self.run_images, 10, False)
         elif keys[pygame.K_LEFT] or keys[pygame.K_a]:
             if not self.vector.x:
                 self.cur_frame = 0
             self.vector.x = -1
             self.direction = 0
-            self.animate(self.run_images, 10, True)
+            if self.status != 'jump':
+                self.animate(self.run_images, 10, True)
         else:
             if self.vector.x == -1:
                 self.prev_vector = True
@@ -69,7 +83,8 @@ class Player(pygame.sprite.Sprite):
                 self.prev_vector = False
                 self.cur_frame = 0
             self.vector.x = 0
-            self.animate(self.idle_images, 6, self.prev_vector)
+            if self.status != 'jump':
+                self.animate(self.idle_images, 6, self.prev_vector)
 
     def attack(self, mob):
         mob.health -= self.damage
@@ -103,6 +118,33 @@ class Collision(Player):
         else:
             self.rect.x = player.rect.x
             self.rect.y = player.rect.y
+
+
+class Effect(Player):
+    def __init__(self, pos):
+        super().__init__(pos)
+        self.cur_frame = 0
+        self.delay = 0
+        self.image = pygame.Surface((40, 40))
+        self.rect = self.image.get_rect(topleft=pos)
+        self.images = []
+
+    def update(self, player):
+        if not player.direction:
+            self.rect.x = player.rect.x + player.rect[2] - 100
+            self.rect.y = player.rect.y + 15
+        else:
+            self.rect.x = player.rect.x + 40
+            self.rect.y = player.rect.y + 15
+
+    def animate_effect(self, sheet, num, flip):
+        self.images = [pygame.image.load(f'{sheet}_frame{i}.png') for i in range(num)]
+        self.cur_frame = (self.cur_frame + 1) % num
+        self.image = self.images[self.cur_frame]
+        self.image = pygame.transform.scale(self.image, (50, 100))
+        if flip:
+            self.image = pygame.transform.flip(self.image, True, False)
+        self.image.set_colorkey((255, 255, 255))
 
 
 class PlayerStats:
