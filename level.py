@@ -20,6 +20,7 @@ damage = 5
 up_counter = 0
 jump_state = False
 player_v = 10
+location = "village"
 
 
 def animation(clas, frame, col, size1, size2):
@@ -72,31 +73,108 @@ class Platform(pygame.sprite.Sprite):
         self.rect.x += shift
 
     '''7 типов: поверхностные(X), боковые левые(L), средние(Z), боково-поверхностные левые(I), 
-    боково-поверхностные правые(J), всякие(A), боковые правые(R)'''
+    боково-поверхностные правые(J), всякие(A), боковые правые(R), 
+    боково-нижние левые(D), боково-нижние правые(N), нижние средние(H)'''
 
     def type(self, typ):
+        global location
         # тут лучше потом переделать хранение через словарь))
         if typ == 'X':
-            self.image = pygame.image.load('graphics\\tiles\\town01.png')
+            self.image = pygame.image.load(f'tile assets\\{location} tiles\\town01.png')
             self.image = pygame.transform.scale(self.image, (self.size, self.size))
         elif typ == 'R':
-            self.image = pygame.image.load('graphics\\tiles\\town02.png')
+            self.image = pygame.image.load(f'tile assets\\{location} tiles\\town02.png')
             self.image = pygame.transform.scale(self.image, (self.size, self.size))
         elif typ == 'L':
-            self.image = pygame.image.load('graphics\\tiles\\town07.png')
+            self.image = pygame.image.load(f'tile assets\\{location} tiles\\town07.png')
             self.image = pygame.transform.scale(self.image, (self.size, self.size))
         elif typ == 'Z':
-            self.image = pygame.image.load('graphics\\tiles\\town03.png')
+            self.image = pygame.image.load(f'tile assets\\{location} tiles\\town03.png')
             self.image = pygame.transform.scale(self.image, (self.size, self.size))
         elif typ == 'I':
-            self.image = pygame.image.load('graphics\\tiles\\town04.png')
+            self.image = pygame.image.load(f'tile assets\\{location} tiles\\town04.png')
             self.image = pygame.transform.scale(self.image, (self.size, self.size))
         elif typ == 'J':
-            self.image = pygame.image.load('graphics\\tiles\\town05.png')
+            self.image = pygame.image.load(f'tile assets\\{location} tiles\\town05.png')
             self.image = pygame.transform.scale(self.image, (self.size, self.size))
         elif typ == 'A':
-            self.image = pygame.image.load('graphics\\tiles\\town06.png')
+            self.image = pygame.image.load(f'tile assets\\{location} tiles\\town06.png')
             self.image = pygame.transform.scale(self.image, (self.size, self.size))
+        elif typ == 'D':
+            self.image = pygame.image.load(f'tile assets\\{location} tiles\\town08.png')
+            self.image = pygame.transform.scale(self.image, (self.size, self.size))
+        elif typ == 'H':
+            self.image = pygame.image.load(f'tile assets\\{location} tiles\\town09.png')
+            self.image = pygame.transform.scale(self.image, (self.size, self.size))
+        elif typ == 'N':
+            self.image = pygame.image.load(f'tile assets\\{location} tiles\\town10.png')
+            self.image = pygame.transform.scale(self.image, (self.size, self.size))
+
+
+class Props(pygame.sprite.Sprite):
+    def __init__(self, pos, size):
+        super().__init__()
+        self.size = size
+        self.image = pygame.image.load('graphics\\tiles\\town01.png')
+        self.image = pygame.transform.scale(self.image, (self.size, self.size))
+        self.rect = self.image.get_rect(bottomleft=pos)
+
+    def update(self, shift):
+        self.rect.x += shift
+
+    def type(self, typ):
+        props = {"T": ["tile assets\\village props\\tree_2.png", (250, 250)],
+                 "t": ["tile assets\\village props\\tree_1.png", (250, 250)],
+                 "m": ["tile assets\\village props\\barrel.png", (70, 70)],
+                 "x": ["tile assets\\village props\\bag.png", (50, 50)],
+                 "e": ["tile assets\\village props\\box_1.png", (50, 50)],
+                 "B": ["tile assets\\village props\\box_2.png", (70, 70)],
+                 "b": ["tile assets\\village props\\box_3.png", (50, 50)],
+                 "j": ["tile assets\\village props\\ear_1.png", (100, 50)],
+                 "i": ["tile assets\\village props\\ear_2.png", (50, 50)],
+                 "F": ["tile assets\\village props\\flowers.png", (120, 70)],
+                 "f": ["tile assets\\village props\\fire.png", (90, 40)],
+                 "w": ["tile assets\\village props\\wall.png", (170, 70)],
+                 "W": ["tile assets\\village props\\well.png", (150, 100)],
+                 "o": ["tile assets\\village props\\target.png", (50, 50)],
+                 "O": ["tile assets\\village props\\scarecrow.png", (100, 100)],
+                 "l": ["tile assets\\village props\\logs.png", (100, 50)],
+                 "c": ["tile assets\\village props\\sign_2.png", (100, 100)],
+                 "s": ["tile assets\\village props\\sign_1.png", (80, 80)],
+                 "a": ["tile assets\\town props\\sign.png", (100, 100)],
+                 "p": ["tile assets\\village props\\pumpkin.png", (100, 50)],
+                 "G": ["tile assets\\village props\\grave_1.png", (50, 50)],
+                 "g": ["tile assets\\village props\\grave_2.png", (50, 50)],
+                 "Q": ["tile assets\\village props\\statue.png", (70, 170)],
+                 "1": ["tile assets\\village props\\grass_1.png", (30, 30)],
+                 "2": ["tile assets\\village props\\grass_2.png", (30, 30)],
+                 "3": ["tile assets\\village props\\grass_3.png", (30, 30)],
+                 "4": ["tile assets\\village props\\grass_4.png", (30, 30)],
+                 "5": ["tile assets\\town props\\grass_1.png", (30, 30)],
+                 "6": ["tile assets\\town props\\grass_2.png", (30, 30)],
+                 "7": ["tile assets\\town props\\grass_3.png", (30, 30)],
+                 "8": ["tile assets\\village props\\bush_1.png", (100, 50)],
+                 "9": ["tile assets\\village props\\bush_2.png", (170, 70)],
+                 "0": ["tile assets\\village props\\bush_3.png", (170, 70)],
+                 "+": ["tile assets\\village props\\rock_1.png", (90, 40)],
+                 "-": ["tile assets\\village props\\rock_2.png", (100, 50)],
+                 "=": ["tile assets\\village props\\rock_3.png", (90, 40)],
+                 "<": ["tile assets\\town props\\rock_1.png", (80, 30)],
+                 ">": ["tile assets\\town props\\rock_2.png", (80, 30)],
+                 "*": ["tile assets\\town props\\rock_3.png", (100, 50)],
+                 "!": ["tile assets\\town props\\lamp.png", (30, 80)],
+                 ":": ["tile assets\\village props\\straw_1.png", (120, 70)],
+                 ";": ["tile assets\\village props\\straw_2.png", (100, 50)],
+                 ".": ["tile assets\\village props\\jug_2.png", (30, 30)],
+                 ",": ["tile assets\\village props\\jug_3.png", (30, 30)],
+                 "@": ["tile assets\\village props\\fence_1.png", (120, 70)],
+                 "#": ["tile assets\\village props\\fence_2.png", (120, 70)],
+                 "%": ["tile assets\\village props\\fence_3.png", (100, 50)],
+                 "&": ["tile assets\\town props\\fence_1.png", (150, 50)],
+                 "$": ["tile assets\\town props\\fence_2.png", (150, 50)]
+                 }
+        self.image = pygame.image.load(props[typ][0])
+        self.image = pygame.transform.scale(self.image, props[typ][1])
 
 
 class Level:
@@ -107,7 +185,58 @@ class Level:
         self.money = 0
 
     def read(self, map2):
+        props = {"T": ["tile assets\\village props\\tree_2.png", (250, 250)],
+                 "t": ["tile assets\\village props\\tree_1.png", (250, 250)],
+                 "m": ["tile assets\\village props\\barrel.png", (70, 70)],
+                 "x": ["tile assets\\village props\\bag.png", (50, 50)],
+                 "e": ["tile assets\\village props\\box_1.png", (50, 50)],
+                 "B": ["tile assets\\village props\\box_2.png", (70, 70)],
+                 "b": ["tile assets\\village props\\box_3.png", (50, 50)],
+                 "j": ["tile assets\\village props\\ear_1.png", (100, 50)],
+                 "i": ["tile assets\\village props\\ear_2.png", (50, 50)],
+                 "F": ["tile assets\\village props\\flowers.png", (120, 70)],
+                 "f": ["tile assets\\village props\\fire.png", (90, 40)],
+                 "w": ["tile assets\\village props\\wall.png", (170, 70)],
+                 "W": ["tile assets\\village props\\well.png", (150, 100)],
+                 "o": ["tile assets\\village props\\target.png", (50, 50)],
+                 "O": ["tile assets\\village props\\scarecrow.png", (100, 100)],
+                 "l": ["tile assets\\village props\\logs.png", (100, 50)],
+                 "c": ["tile assets\\village props\\sign_2.png", (100, 100)],
+                 "s": ["tile assets\\village props\\sign_1.png", (80, 80)],
+                 "a": ["tile assets\\town props\\sign.png", (100, 100)],
+                 "p": ["tile assets\\village props\\pumpkin.png", (100, 50)],
+                 "G": ["tile assets\\village props\\grave_1.png", (50, 50)],
+                 "g": ["tile assets\\village props\\grave_2.png", (50, 50)],
+                 "Q": ["tile assets\\village props\\statue.png", (70, 170)],
+                 "1": ["tile assets\\village props\\grass_1.png", (30, 30)],
+                 "2": ["tile assets\\village props\\grass_2.png", (30, 30)],
+                 "3": ["tile assets\\village props\\grass_3.png", (30, 30)],
+                 "4": ["tile assets\\village props\\grass_4.png", (30, 30)],
+                 "5": ["tile assets\\town props\\grass_1.png", (30, 30)],
+                 "6": ["tile assets\\town props\\grass_2.png", (30, 30)],
+                 "7": ["tile assets\\town props\\grass_3.png", (30, 30)],
+                 "8": ["tile assets\\village props\\bush_1.png", (100, 50)],
+                 "9": ["tile assets\\village props\\bush_2.png", (170, 70)],
+                 "0": ["tile assets\\village props\\bush_3.png", (170, 70)],
+                 "+": ["tile assets\\village props\\rock_1.png", (90, 40)],
+                 "-": ["tile assets\\village props\\rock_2.png", (100, 50)],
+                 "=": ["tile assets\\village props\\rock_3.png", (90, 40)],
+                 "<": ["tile assets\\town props\\rock_1.png", (80, 30)],
+                 ">": ["tile assets\\town props\\rock_2.png", (80, 30)],
+                 "*": ["tile assets\\town props\\rock_3.png", (100, 50)],
+                 "!": ["tile assets\\town props\\lamp.png", (30, 80)],
+                 ":": ["tile assets\\village props\\straw_1.png", (120, 70)],
+                 ";": ["tile assets\\village props\\straw_2.png", (100, 50)],
+                 ".": ["tile assets\\village props\\jug_2.png", (30, 30)],
+                 ",": ["tile assets\\village props\\jug_3.png", (30, 30)],
+                 "@": ["tile assets\\village props\\fence_1.png", (120, 70)],
+                 "#": ["tile assets\\village props\\fence_2.png", (120, 70)],
+                 "%": ["tile assets\\village props\\fence_3.png", (100, 50)],
+                 "&": ["tile assets\\town props\\fence_1.png", (150, 50)],
+                 "$": ["tile assets\\town props\\fence_2.png", (150, 50)]
+                 }
         self.platforms = pygame.sprite.Group()
+        self.props = pygame.sprite.Group()
         self.vertical_borders = pygame.sprite.Group()
         self.moneys = pygame.sprite.Group()
         self.player = pygame.sprite.GroupSingle()
@@ -121,10 +250,21 @@ class Level:
         self.vertical_borders.add(self.vert2)
         for ind_r, r in enumerate(map2):
             for ind_c, c in enumerate(r):
-                if c == "X" or c == "L" or c == "R" or c == "Z" or c == "I" or c == "J" or c == "A":
+                if c == "X" or c == "L" or c == "R" or c == "Z" or c == "I" or c == "J" or c == "A"\
+                        or c == "D" or c == "H" or c == "N":
                     platform = Platform((size_x * ind_c, size_x * ind_r), size_x)
                     platform.type(c)
                     self.platforms.add(platform)
+                elif c == "T" or c == "t" or c == "B" or c == "b" or c == "m" or c == "x" or c == "e" or c == "j"\
+                        or c == "i" or c == "F" or c == "f" or c == "W" or c == "w" or c == "O" or c == "o" \
+                        or c == "l" or c == "c" or c == "s" or c == "a" or c == "p" or c == "G" or c == "g" \
+                        or c == "Q" or c == "1" or c == "2" or c == "3" or c == "4" or c == "5" or c == "6" or c == "7"\
+                        or c == "8" or c == "9" or c == "0" or c == "+" or c == "-" or c == "=" or c == ">" or c == "<"\
+                        or c == "*" or c == "!" or c == ":" or c == ";" or c == "." or c == ","\
+                        or c == "@" or c == "#" or c == "%" or c == "&" or c == "$":
+                    prop = Props((size_x * ind_c, size_x * (ind_r + 1 + (props[c][1][0] - props[c][1][1]) // 50)), props[c][1][0])
+                    prop.type(c)
+                    self.props.add(prop)
                 elif c == "P":
                     player = Player((size_x * ind_c, size_x * ind_r))
                     self.player.add(player)
@@ -261,6 +401,8 @@ class Level:
     def run(self):
         self.platforms.update(self.camera)
         self.platforms.draw(self.screen)
+        self.props.update(self.camera)
+        self.props.draw(self.screen)
         self.moneys.update(self.camera)
         self.moneys.draw(self.screen)
         self.vertical_borders.draw(self.screen)
@@ -280,7 +422,7 @@ class Level:
         self.checkpoints.update(self.camera)
         self.checkpoints.draw(self.screen)
         self.player.draw(self.screen)
-        self.collision.draw(self.screen)
+        #self.collision.draw(self.screen)
 
 
 class Border(pygame.sprite.Sprite):
