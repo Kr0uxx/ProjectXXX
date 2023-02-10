@@ -17,7 +17,7 @@ class Mob(pygame.sprite.Sprite):
         self.gravity = 0.3
         self.attack_delay = 0
         self.lever_attack = False
-        self.damage = 40
+        self.damage = 100
 
     def update(self, shift):
         self.rect.x += shift

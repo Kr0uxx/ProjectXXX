@@ -1,5 +1,5 @@
 import pygame
-from player import Player, Collision, PlayerStats
+from player import Player, Collision, PlayerStats, Effect
 from mob import Mob
 from boss import Boss
 from shop import Shop
@@ -109,6 +109,7 @@ class Level:
         self.moneys = pygame.sprite.Group()
         self.player = pygame.sprite.GroupSingle()
         self.collision = pygame.sprite.GroupSingle()
+        self.effect = pygame.sprite.GroupSingle()
         self.mobs = pygame.sprite.Group()
         self.boss = pygame.sprite.GroupSingle()
         self.shops = pygame.sprite.Group()
@@ -125,6 +126,9 @@ class Level:
                     self.player.add(player)
                     collision = Collision((size_x * ind_c, size_x * ind_r), self.player.sprite)
                     self.collision.add(collision)
+                    effect = Effect((size_x * ind_c, size_x * ind_r))
+                    self.effect.add(effect)
+                    self.player.effect = self.effect
                 elif c == "M":
                     money = Money((size_x * ind_c, size_x * ind_r))
                     self.moneys.add(money)
@@ -255,8 +259,6 @@ class Level:
     def enemy_attack(self):
         for mob in self.mobs:
             if pygame.sprite.collide_rect(mob, self.collision.sprite):
-                mob.v = 0
-                mob.lever_attack = True
                 if mob.attack_delay == 30:
                     self.player_stats.get_damage(mob.damage)
                     self.display.hp_subtraction(mob.damage)
@@ -265,22 +267,18 @@ class Level:
                     mob.attack_delay = 0
                 else:
                     mob.attack_delay += 1
-            else:
-                if mob.lever_attack:
-                    mob.v = 3
-                    mob.lever_attack = False
-                mob.attack_delay = 0
 
     def check_enemy(self):
         for mob in self.mobs:
-            if mob.x_pos + 60 < mob.step_counter:
-                mob.v = -3
-                mob.image = pygame.transform.flip(mob.image, True, False)
-            if mob.x_pos - 60 >= mob.step_counter:
-                mob.v = 3
-                mob.image = pygame.transform.flip(mob.image, True, False)
-            mob.rect.x += mob.v
-            mob.step_counter += mob.v
+            if not pygame.sprite.collide_rect(mob, self.collision.sprite):
+                if mob.x_pos + 60 <= mob.step_counter:
+                    mob.v = -3
+                    mob.image = pygame.transform.flip(mob.image, True, False)
+                if mob.x_pos - 60 >= mob.step_counter:
+                    mob.v = 3
+                    mob.image = pygame.transform.flip(mob.image, True, False)
+                mob.rect.x += mob.v
+                mob.step_counter += mob.v
 
     def run(self):
         # 1 слой - камера, тайлы
@@ -308,6 +306,15 @@ class Level:
         self.collision.update(self.player.sprite)
         self.vertical()
         self.horizontal()
+        self.effect.update(self.player.sprite)
+        if self.player.sprite.status == 'attack':
+            if self.player.sprite.orientation == 'left':
+                self.effect.sprite.animate_effect('graphics\\effects\\attack_effect\\SFX301', 5, False)
+            else:
+                self.effect.sprite.animate_effect('graphics\\effects\\attack_effect\\SFX301', 5, True)
+            self.effect.draw(self.screen)
+            if self.effect.sprite.cur_frame == 4:
+                self.player.sprite.status = 'stand'
         # 5 слой - функции
         self.shop_collision()
         self.get_money()

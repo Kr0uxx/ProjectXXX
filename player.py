@@ -22,6 +22,8 @@ class Player(pygame.sprite.Sprite):
         self.vector = pygame.math.Vector2(0, 0)
         self.v = 10
         self.orientation = 'right'
+        self.platforms = pygame.sprite.Group()
+        self.plat_rects = [platform.rect for platform in self.platforms]
         # характеристики прыжка
         self.gravity = 2
         self.v_jump = -35
@@ -29,6 +31,8 @@ class Player(pygame.sprite.Sprite):
         self.cur_frame = 0
         self.delay = 0
         self.prev_vector = False
+        self.status = 'stand'
+        self.effect = pygame.sprite.GroupSingle
         self.animate(self.image_idle, 1, 6, self.rect.x, self.rect.y, False)
 
     def animate(self, sheet, columns, rows, x, y, flip):
@@ -56,18 +60,22 @@ class Player(pygame.sprite.Sprite):
 
     def get_key(self):
         keys = pygame.key.get_pressed()
+        if pygame.sprite.spritecollideany(self, self.platforms):
+            self.status = 'jump'
         if keys[pygame.K_d]:
             if not self.vector.x:
                 self.cur_frame = 0
             self.orientation = 'right'
             self.vector.x = 1
-            self.animate(self.image_run, 1, 10, self.rect.x, self.rect.y, False)
+            if self.status != 'jump':
+                self.animate(self.image_run, 1, 10, self.rect.x, self.rect.y, False)
         elif keys[pygame.K_a]:
             if not self.vector.x:
                 self.cur_frame = 0
             self.orientation = 'left'
             self.vector.x = -1
-            self.animate(self.image_run, 1, 10, self.rect.x, self.rect.y, True)
+            if self.status != 'jump':
+                self.animate(self.image_run, 1, 10, self.rect.x, self.rect.y, True)
         else:
             if self.vector.x == -1:
                 self.prev_vector = True
@@ -76,7 +84,8 @@ class Player(pygame.sprite.Sprite):
                 self.prev_vector = False
                 self.cur_frame = 0
             self.vector.x = 0
-            self.animate(self.image_idle, 1, 6, self.rect.x, self.rect.y, self.prev_vector)
+            if self.status != 'jump':
+                self.animate(self.image_idle, 1, 6, self.rect.x, self.rect.y, self.prev_vector)
         '''if keys[pygame.K_SPACE]:
             self.jump()'''
 
@@ -88,11 +97,39 @@ class Player(pygame.sprite.Sprite):
         self.vector.y = self.v_jump
 
     def attack(self, mob):
+        pygame.mixer.Sound('music\\sounds\\mob_hurt_sound.wav').play()
         mob.health -= self.damage
         print("enemy health:", mob.health)
 
     def update(self):
         self.get_key()
+
+
+class Effect(Player):
+    def __init__(self, pos):
+        super().__init__(pos)
+        self.cur_frame = 0
+        self.delay = 0
+        self.image = pygame.Surface((40, 40))
+        self.rect = self.image.get_rect(topleft=pos)
+        self.images = []
+
+    def update(self, player):
+        if player.orientation == 'left':
+            self.rect.x = player.rect.x + player.rect[2] - 100
+            self.rect.y = player.rect.y + 15
+        else:
+            self.rect.x = player.rect.x + 40
+            self.rect.y = player.rect.y + 15
+
+    def animate_effect(self, sheet, num, flip):
+        self.images = [pygame.image.load(f'{sheet}_frame{i}.png') for i in range(num)]
+        self.cur_frame = (self.cur_frame + 1) % num
+        self.image = self.images[self.cur_frame]
+        self.image = pygame.transform.scale(self.image, (50, 100))
+        if flip:
+            self.image = pygame.transform.flip(self.image, True, False)
+        self.image.set_colorkey((255, 255, 255))
 
 
 class PlayerStats:

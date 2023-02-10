@@ -39,7 +39,7 @@ height = len(active_map) * size_x
 damage = 5
 
 size = width, height
-screen = pygame.display.set_mode(size)
+screen = pygame.display.set_mode(size, pygame.FULLSCREEN)
 clock = pygame.time.Clock()
 player_stats = PlayerStats(status, 1000, 1000, damage)
 level = Level(active_map, screen, player_stats.status)
@@ -151,6 +151,8 @@ while running:
         if event.type == pygame.MOUSEBUTTONDOWN:
             if player_stats.status == 'game':
                 if event.button == 1:
+                    pygame.mixer.Sound('music\\sounds\\attack_sound.mp3').play()
+                    level.player.sprite.status = 'attack'
                     level.enemy_hurt()
         if event.type == pygame.KEYDOWN:
             if player_stats.status == 'game':
@@ -197,6 +199,8 @@ while running:
         level.run()
         if level.open_checkpoint():
             player_stats.status = 'point'
+        if player_stats.hp == 0:
+            print('jojo')
     elif player_stats.status == 'start':
         start_screen.run(50, 350, 165)
     elif player_stats.status == 'menu':
