@@ -9,7 +9,7 @@ class Menu:
         self._options = []
         self._callbacks = []
         self._current_option_index = 0
-        self.image = pygame.Surface((1280, 1080))
+        self.image = pygame.Surface((1920, 1080))
         self.screen = screen
         self.image.fill('black')
 

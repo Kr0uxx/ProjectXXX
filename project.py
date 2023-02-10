@@ -208,8 +208,9 @@ while running:
     elif player_stats.status == 'point':
         points_display.run(50, 350, 165)
         points_display.append_option(teleport)
-    if pygame.mouse.get_focused():
-        all_sprites.draw(screen)
+    if player_stats.status != 'game':
+        if pygame.mouse.get_focused():
+            all_sprites.draw(screen)
     pygame.display.flip()
     clock.tick(144)
 pygame.quit()

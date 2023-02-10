@@ -9,7 +9,7 @@ checkpoints2 = {'1': (600, 450),
 
 class PointsDisplay:
     def __init__(self, screen):
-        self.window = pygame.Surface((1500, 1080))
+        self.window = pygame.Surface((1920, 1080))
         self.points_display = []
         self.function = []
         self.coordinates = []
