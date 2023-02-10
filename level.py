@@ -11,11 +11,6 @@ from display import Display
 map1 = open("maps/map1.txt").readlines()
 size_x = 50
 width = 1920
-f = open("maps//map1.txt", mode="rt")
-data = f.readlines()
-map_w = len(data[17]) * size_x
-height = len(data) * size_x
-f.close()
 status = 'start'
 hp = 100
 damage = 5
@@ -118,10 +113,6 @@ class Level:
         self.boss = pygame.sprite.GroupSingle()
         self.shops = pygame.sprite.Group()
         self.checkpoints = pygame.sprite.Group()
-        self.vert1 = Border(0, 0, 0, height)
-        self.vert2 = Border(map_w, 0, map_w, height)
-        self.vertical_borders.add(self.vert1)
-        self.vertical_borders.add(self.vert2)
         for ind_r, r in enumerate(map2):
             for ind_c, c in enumerate(r):
                 if c == "X" or c == "L" or c == "R" or c == "Z" or c == "I" or c == "J" or c == "A":
@@ -159,31 +150,15 @@ class Level:
         playery = player.rect.centery
         vectorx = player.vector.x
         vectory = player.vector.y
-        if self.vert1.rect.x >= width / 1000 and playerx < width / 2:
+        if playerx <= width / 2 and vectorx < 0:
             self.camera = 10
             player.v = 0
-        elif self.vert2.rect.x <= width * 999 / 1000 and playerx > width / 2:
+        elif playerx > width / 2 and vectorx > 0:
             self.camera = -10
-            player.v = 0
-        if self.vert1.rect.x >= width / 1000 and playerx > width / 2:
-            self.camera = -10
-            player.v = 0
-        elif self.vert2.rect.x <= width * 999 / 1000 and playerx < width / 2:
-            self.camera = 10
             player.v = 0
         else:
             self.camera = 0
-            if self.vert2.rect.x <= width * 999 / 1000:
-                player.v = 10
-            elif self.vert1.rect.x >= width / 1000:
-                player.v = 10
-
-    def camera_centred(self, x):
-        self.platforms.update(x)
-        self.moneys.update(x)
-        self.mobs.update(x)
-        self.shops.update(x)
-        self.checkpoints.update(x)
+            player.v = 10
 
     def vertical(self):
         player = self.player.sprite
@@ -207,13 +182,6 @@ class Level:
                     player.rect.top = platform.rect.bottom
                     player.vector.y = 0
 
-    def lr_border(self):
-        player = self.player.sprite
-        if self.vert1.rect.colliderect(player.rect):
-            player.rect.left = self.vert1.rect.right
-        if self.vert2.rect.colliderect(player.rect):
-            player.rect.right = self.vert2.rect.left
-
     def get_money(self):
         player = self.player.sprite
         for money in self.moneys:
@@ -222,9 +190,9 @@ class Level:
                 money.kill()
                 self.money += 1
         f_shadow = pygame.font.Font('dialogs\\fonts\\header_font.ttf', 58)
-        ff = pygame.font.Font('dialogs\\fonts\\header_font.ttf', 49)
+        f = pygame.font.Font('dialogs\\fonts\\header_font.ttf', 49)
         text_shadow = f_shadow.render(str(self.money), True, (0, 0, 0))
-        text = ff.render(str(self.money), True, (233, 211, 3))
+        text = f.render(str(self.money), True, (233, 211, 3))
         image_display_coin = pygame.image.load('graphics\\props\\coin\\coin-01.png')
         image_display_coin = pygame.transform.scale(image_display_coin, (40, 40))
         self.screen.blit(image_display_coin, (30, 170))
@@ -249,7 +217,14 @@ class Level:
                 if keys[pygame.K_e]:
                     return shop.interaction()
 
-    # уродская функция для ограничения колва прыжков, которая должна была лежать в классе плейер
+    def camera_centred(self, x):
+        self.platforms.update(x)
+        self.moneys.update(x)
+        self.mobs.update(x)
+        self.shops.update(x)
+        self.checkpoints.update(x)
+
+    # the worst code i`ve ever seen
     def jump_check(self):
         global up_counter
         global jump_state
@@ -265,7 +240,7 @@ class Level:
             up_counter = 0
             jump_state = False
 
-    # 3 уродских функции для моба, которые должны были лежать в самом мобе
+    # говнокод, переписать
     def enemy_hurt(self):
         player = self.player.sprite
         for mob in self.mobs:
@@ -333,7 +308,6 @@ class Level:
         self.collision.update(self.player.sprite)
         self.vertical()
         self.horizontal()
-        self.lr_border()
         # 5 слой - функции
         self.shop_collision()
         self.get_money()
@@ -343,21 +317,3 @@ class Level:
 
         # 6 слой дисплей
         self.display.run()
-
-
-size = width, height
-screen = pygame.display.set_mode(size)
-level = Level(map1, screen, 'game')
-
-
-# очередной класс в этом файле
-class Border(pygame.sprite.Sprite):
-    def __init__(self, x1, y1, x2, y2):
-        super().__init__()
-        if x1 == x2:  # вертикальная стенка
-            self.add(level.vertical_borders)
-            self.image = pygame.Surface([0.5, y2 - y1])
-            self.rect = pygame.Rect(x1, y1, 1, y2 - y1)
-
-    def update(self, shift):
-        self.rect.x += shift
