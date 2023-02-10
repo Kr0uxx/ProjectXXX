@@ -1,0 +1,37 @@
+    def camera_level(self):
+        global player_v
+        player = self.player.sprite
+        playerx = player.rect.centerx
+        playery = player.rect.centery
+        vectorx = player.vector.x
+        vectory = player.vector.y
+        if (self.vert1.rect.x < width / 1000 or self.vert1.rect.x > width * 999 / 1000) and \
+                (self.vert2.rect.x < width / 1000 or self.vert2.rect.x > width * 999 / 1000):
+            if playerx <= width / 2 and vectorx < 0:
+                self.camera = player_v
+                player.v = 0
+            elif playerx >= width / 2 and vectorx > 0:
+                self.camera = -player_v
+                player.v = 0
+            else:
+                self.camera = 0
+                player.v = player_v
+        else:
+            if self.vert1.rect.x >= width / 1000 and playerx < width / 2:
+                self.camera = 0
+                player.v = player_v
+            elif self.vert2.rect.x <= width * 999 / 1000 and playerx > width / 2:
+                self.camera = 0
+                player.v = -player_v
+            if self.vert1.rect.x >= width / 1000 and playerx > width / 2:
+                self.camera = -player_v
+                player.v = 0
+            elif self.vert2.rect.x <= width * 999 / 1000 and playerx < width / 2:
+                self.camera = player_v
+                player.v = 0
+            else:
+                self.camera = 0
+                if self.vert2.rect.x <= width * 999 / 1000:
+                    player.v = player_v
+                elif self.vert1.rect.x >= width / 1000:
+                    player.v = player_v
