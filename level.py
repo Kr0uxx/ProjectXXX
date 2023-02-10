@@ -300,6 +300,8 @@ class Level:
         self.boss.draw(self.screen)
 
         self.shops.update(self.camera)
+        for shop in self.shops:
+            shop.animate_npc(shop.images, 6, False, (250, 250))
         self.shops.draw(self.screen)
 
         # 4 слой - игрок
