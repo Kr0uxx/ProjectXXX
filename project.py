@@ -19,7 +19,7 @@ status = 'start'
 # карта для уровня
 map1 = open("maps/map1.txt").readlines()
 map_boss = open("maps/map_boss").readlines()
-active_map = map_boss
+active_map = map1
 
 # музыка
 main_theme = 'music\\main theme.mp3'
@@ -81,7 +81,7 @@ def quit_game():
 
 
 def resume_game():
-    music(main_theme)
+    pygame.mixer.music.unpause()
     player_stats.status = 'game'
 
 
@@ -204,6 +204,7 @@ while running:
     elif player_stats.status == 'start':
         start_screen.run(50, 350, 165)
     elif player_stats.status == 'menu':
+        pygame.mixer.music.pause()
         menu.run(50, 350, 165)
     elif player_stats.status == 'point':
         points_display.run(50, 350, 165)

@@ -19,7 +19,7 @@ class NPC(pygame.sprite.Sprite):
         dialog.play(str(self.active_dialog) + '01', 1)
 
     def animate_npc(self, sheet, num, flip, size):
-        if self.delay == 3:
+        if self.delay == 2:
             self.cur_frame = (self.cur_frame + 1) % num
             self.delay = 0
         else:
