@@ -16,6 +16,57 @@ hp = 100
 damage = 5
 up_counter = 0
 jump_state = False
+location = "village"
+props = {"T": ["graphics\\props\\village\\tree_2.png", (250, 250)],
+         "t": ["graphics\\props\\village\\tree_1.png", (250, 250)],
+         "m": ["graphics\\props\\village\\barrel.png", (70, 70)],
+         "x": ["graphics\\props\\village\\bag.png", (50, 50)],
+         "e": ["graphics\\props\\village\\box_1.png", (50, 50)],
+         "B": ["graphics\\props\\village\\box_2.png", (70, 70)],
+         "b": ["graphics\\props\\village\\box_3.png", (50, 50)],
+         "j": ["graphics\\props\\village\\ear_1.png", (100, 50)],
+         "i": ["graphics\\props\\village\\ear_2.png", (50, 50)],
+         "F": ["graphics\\props\\village\\flowers.png", (120, 70)],
+         "f": ["graphics\\props\\village\\fire.png", (90, 40)],
+         "w": ["graphics\\props\\village\\wall.png", (170, 70)],
+         "W": ["graphics\\props\\village\\well.png", (150, 100)],
+         "o": ["graphics\\props\\village\\target.png", (50, 50)],
+         "O": ["graphics\\props\\village\\scarecrow.png", (100, 100)],
+         "l": ["graphics\\props\\village\\logs.png", (100, 50)],
+         "c": ["graphics\\props\\village\\sign_2.png", (100, 100)],
+         "s": ["graphics\\props\\village\\sign_1.png", (80, 80)],
+         "a": ["graphics\\props\\village\\sign.png", (100, 100)],
+         "p": ["graphics\\props\\village\\pumpkin.png", (100, 50)],
+         "G": ["graphics\\props\\village\\grave_1.png", (50, 50)],
+         "g": ["graphics\\props\\village\\grave_2.png", (50, 50)],
+         "Q": ["graphics\\props\\village\\statue.png", (70, 170)],
+         "1": ["graphics\\props\\village\\grass_1.png", (30, 30)],
+         "2": ["graphics\\props\\village\\grass_2.png", (30, 30)],
+         "3": ["graphics\\props\\village\\grass_3.png", (30, 30)],
+         "4": ["graphics\\props\\village\\grass_4.png", (30, 30)],
+         "5": ["graphics\\props\\village\\grass_1.png", (30, 30)],
+         "6": ["graphics\\props\\village\\grass_2.png", (30, 30)],
+         "7": ["graphics\\props\\village\\grass_3.png", (30, 30)],
+         "8": ["graphics\\props\\village\\bush_1.png", (100, 50)],
+         "9": ["graphics\\props\\village\\bush_2.png", (170, 70)],
+         "0": ["graphics\\props\\village\\bush_3.png", (170, 70)],
+         "+": ["graphics\\props\\village\\rock_1.png", (90, 40)],
+         "-": ["graphics\\props\\village\\rock_2.png", (100, 50)],
+         "=": ["graphics\\props\\village\\rock_3.png", (90, 40)],
+         "<": ["graphics\\props\\village\\rock_1.png", (80, 30)],
+         ">": ["graphics\\props\\village\\rock_2.png", (80, 30)],
+         "*": ["graphics\\props\\village\\rock_3.png", (100, 50)],
+         "!": ["graphics\\props\\village\\lamp.png", (30, 80)],
+         ":": ["graphics\\props\\village\\straw_1.png", (120, 70)],
+         ";": ["graphics\\props\\village\\straw_2.png", (100, 50)],
+         ".": ["graphics\\props\\village\\jug_2.png", (30, 30)],
+         ",": ["graphics\\props\\village\\jug_3.png", (30, 30)],
+         "@": ["graphics\\props\\village\\fence_1.png", (120, 70)],
+         "#": ["graphics\\props\\village\\fence_2.png", (120, 70)],
+         "%": ["graphics\\props\\village\\fence_3.png", (100, 50)],
+         "&": ["graphics\\props\\village\\fence_1.png", (150, 50)],
+         "$": ["graphics\\props\\village\\fence_2.png", (150, 50)]
+         }
 
 
 class Money(pygame.sprite.Sprite):
@@ -44,7 +95,7 @@ class Platform(pygame.sprite.Sprite):
     def __init__(self, pos, size):
         super().__init__()
         self.size = size
-        self.image = pygame.image.load('graphics\\tiles\\town01.png')
+        self.image = pygame.image.load('graphics/tiles/town/town01.png')
         self.image = pygame.transform.scale(self.image, (self.size, self.size))
         self.rect = self.image.get_rect(topleft=pos)
 
@@ -53,31 +104,58 @@ class Platform(pygame.sprite.Sprite):
         self.rect.x += shift
 
     '''7 типов: поверхностные(X), боковые левые(L), средние(Z), боково-поверхностные левые(I), 
-    боково-поверхностные правые(J), всякие(A), боковые правые(R)'''
+    боково-поверхностные правые(J), всякие(A), боковые правые(R), 
+    боково-нижние левые(D), боково-нижние правые(N), нижние средние(H)'''
 
     def type(self, typ):
+        global location
         # тут лучше потом переделать хранение через словарь))
         if typ == 'X':
-            self.image = pygame.image.load('graphics\\tiles\\town01.png')
+            self.image = pygame.image.load(f'graphics\\tiles\\{location}\\town01.png')
             self.image = pygame.transform.scale(self.image, (self.size, self.size))
         elif typ == 'R':
-            self.image = pygame.image.load('graphics\\tiles\\town02.png')
+            self.image = pygame.image.load(f'graphics\\tiles\\{location}\\town02.png')
             self.image = pygame.transform.scale(self.image, (self.size, self.size))
         elif typ == 'L':
-            self.image = pygame.image.load('graphics\\tiles\\town07.png')
+            self.image = pygame.image.load(f'graphics\\tiles\\{location}\\town07.png')
             self.image = pygame.transform.scale(self.image, (self.size, self.size))
         elif typ == 'Z':
-            self.image = pygame.image.load('graphics\\tiles\\town03.png')
+            self.image = pygame.image.load(f'graphics\\tiles\\{location}\\town03.png')
             self.image = pygame.transform.scale(self.image, (self.size, self.size))
         elif typ == 'I':
-            self.image = pygame.image.load('graphics\\tiles\\town04.png')
+            self.image = pygame.image.load(f'graphics\\tiles\\{location}\\town04.png')
             self.image = pygame.transform.scale(self.image, (self.size, self.size))
         elif typ == 'J':
-            self.image = pygame.image.load('graphics\\tiles\\town05.png')
+            self.image = pygame.image.load(f'graphics\\tiles\\{location}\\town05.png')
             self.image = pygame.transform.scale(self.image, (self.size, self.size))
         elif typ == 'A':
-            self.image = pygame.image.load('graphics\\tiles\\town06.png')
+            self.image = pygame.image.load(f'graphics\\tiles\\{location}\\town06.png')
             self.image = pygame.transform.scale(self.image, (self.size, self.size))
+        elif typ == 'D':
+            self.image = pygame.image.load(f'graphics\\tiles\\{location}\\town08.png')
+            self.image = pygame.transform.scale(self.image, (self.size, self.size))
+        elif typ == 'H':
+            self.image = pygame.image.load(f'graphics\\tiles\\{location}\\town09.png')
+            self.image = pygame.transform.scale(self.image, (self.size, self.size))
+        elif typ == 'N':
+            self.image = pygame.image.load(f'graphics\\tiles\\{location}\\town10.png')
+            self.image = pygame.transform.scale(self.image, (self.size, self.size))
+
+
+class Props(pygame.sprite.Sprite):
+    def __init__(self, pos, size):
+        super().__init__()
+        self.size = size
+        self.image = pygame.image.load('graphics\\tiles\\town\\town01.png')
+        self.image = pygame.transform.scale(self.image, (self.size, self.size))
+        self.rect = self.image.get_rect(bottomleft=pos)
+
+    def update(self, shift):
+        self.rect.x += shift
+
+    def type(self, typ):
+        self.image = pygame.image.load(props[typ][0])
+        self.image = pygame.transform.scale(self.image, props[typ][1])
 
 
 def cut_sheet(self, sheet, columns, rows):
@@ -114,12 +192,26 @@ class Level:
         self.boss = pygame.sprite.GroupSingle()
         self.shops = pygame.sprite.Group()
         self.checkpoints = pygame.sprite.Group()
+        self.props = pygame.sprite.Group()
         for ind_r, r in enumerate(map2):
             for ind_c, c in enumerate(r):
-                if c == "X" or c == "L" or c == "R" or c == "Z" or c == "I" or c == "J" or c == "A":
+                if c == "X" or c == "L" or c == "R" or c == "Z" or c == "I" or c == "J" or c == "A" \
+                        or c == "D" or c == "H" or c == "N":
                     platform = Platform((size_x * ind_c, size_x * ind_r), size_x)
                     platform.type(c)
                     self.platforms.add(platform)
+                elif c == "T" or c == "t" or c == "B" or c == "b" or c == "m" or c == "x" or c == "e" or c == "j" \
+                        or c == "i" or c == "F" or c == "f" or c == "W" or c == "w" or c == "O" or c == "o" \
+                        or c == "l" or c == "c" or c == "s" or c == "a" or c == "p" or c == "G" or c == "g" \
+                        or c == "Q" or c == "1" or c == "2" or c == "3" or c == "4" or c == "5" or c == "6" or c == "7" \
+                        or c == "8" or c == "9" or c == "0" or c == "+" or c == "-" or c == "=" or c == ">" or c == "<" \
+                        or c == "*" or c == "!" or c == ":" or c == ";" or c == "." or c == "," \
+                        or c == "@" or c == "#" or c == "%" or c == "&" or c == "$":
+                    prop = Props(
+                        (size_x * ind_c, size_x * (ind_r + 1 + (props[c][1][0] - props[c][1][1]) // 50)),
+                        props[c][1][0])
+                    prop.type(c)
+                    self.props.add(prop)
                 elif c == "P":
                     # pos = size_x * ind_c, size_x * ind_r
                     player = Player(pos)
@@ -285,6 +377,8 @@ class Level:
         self.camera_level()
         self.platforms.update(self.camera)
         self.platforms.draw(self.screen)
+        self.props.update(self.camera)
+        self.props.draw(self.screen)
 
         # 2 слой - пропсы
         self.moneys.update(self.camera)
@@ -296,7 +390,8 @@ class Level:
         self.mobs.update(self.camera)
         self.mobs.draw(self.screen)
         self.boss.draw(self.screen)
-
+        for shop in self.shops:
+            shop.animate_npc(shop.images, 6, False, (250, 250))
         self.shops.update(self.camera)
         self.shops.draw(self.screen)
 

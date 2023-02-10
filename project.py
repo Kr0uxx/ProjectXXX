@@ -19,7 +19,7 @@ status = 'start'
 # карта для уровня
 map1 = open("maps/map1.txt").readlines()
 map_boss = open("maps/map_boss").readlines()
-active_map = map1
+active_map = map_boss
 
 # музыка
 main_theme = 'music\\main theme.mp3'
@@ -35,7 +35,7 @@ def music(music_name, volume=0.3, loops=-1):
 music(start_screen_theme)
 size_x = 50
 width = 1920
-height = len(active_map) * size_x
+height = 1080
 damage = 5
 
 size = width, height
