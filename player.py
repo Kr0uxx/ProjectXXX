@@ -21,6 +21,7 @@ class Player(pygame.sprite.Sprite):
         # характеристики прыжка
         self.gravity = 1
         self.v_jump = -16
+        # self.collision = pygame.Surface()
 
     def get_key(self):
         keys = pygame.key.get_pressed()

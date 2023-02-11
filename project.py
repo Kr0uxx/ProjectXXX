@@ -84,8 +84,9 @@ def resume_game():
 
 
 def start_game():
-    with open('system files/checkpoints_list', 'wb') as file:
-        file.write(None)
+    with open('system files/checkpoints_list', 'r+') as file:
+        file.truncate()
+        file.close()
     player_stats.status = 'game'
 
 
