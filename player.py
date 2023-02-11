@@ -134,17 +134,20 @@ class Effect(Player):
 
 class PlayerStats:
     def __init__(self, status, hp, mana, damage):
+        self.screen = screen
         self.status = status
         self.max_hp = hp
         self.max_mana = mana
         self.hp = hp
         self.mana = mana
         self.damage = damage
+        self.dead_screen = DeadScreen(self.screen)
 
     def get_damage(self, damage):
         if (self.hp <= damage or self.hp < 1) and self.status != 'death':
             self.status = 'death'
             pygame.mixer.Sound('music\\sounds\\death music.mp3').play()
+            # self.dead_screen.run()
         elif self.hp > 0:
             pygame.mixer.Sound('music\\sounds\\hurt_sound.wav').play()
             self.hp -= damage

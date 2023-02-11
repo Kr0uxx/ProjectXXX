@@ -8,6 +8,7 @@ from dead_screen import DeadScreen
 from player import PlayerStats, Player
 from dialogs import Dialog
 from checkpoints_display import PointsDisplay
+from levels_display import LvlDisplay
 
 pygame.init()
 running = True
@@ -18,6 +19,8 @@ status = 'start'
 
 # карта для уровня
 map1 = open("maps/map1.txt").readlines()
+map2 = open("maps/map2.txt").readlines()
+map3 = open("maps/map1.txt").readlines()
 map_boss = open("maps/map_boss").readlines()
 active_map = map1
 
@@ -43,7 +46,7 @@ screen = pygame.display.set_mode(size, pygame.FULLSCREEN)
 clock = pygame.time.Clock()
 player_stats = PlayerStats(status, 1000, 1000, damage)
 level = Level(active_map, screen, player_stats.status)
-
+location = 'village'
 display = Display(screen, width, player_stats.hp, player_stats.mana)
 dialog = Dialog(screen)
 
@@ -130,12 +133,21 @@ dead_screen = DeadScreen(screen)
 points_display = PointsDisplay(screen)
 
 # графика
-bg1 = pygame.image.load("graphics\\background_layer_1.png")
-bg1 = pygame.transform.scale(bg1, (width, 1080))
-bg2 = pygame.image.load("graphics\\background_layer_2.png")
-bg2 = pygame.transform.scale(bg2, (width, 1080))
-bg3 = pygame.image.load("graphics\\background_layer_3.png")
-bg3 = pygame.transform.scale(bg3, (width, 1080))
+if location == 'town':
+    bg1 = pygame.image.load("graphics\\background_layer_1.png")
+    bg1 = pygame.transform.scale(bg1, (width, 1080))
+    bg2 = pygame.image.load("graphics\\background_layer_2.png")
+    bg2 = pygame.transform.scale(bg2, (width, 1080))
+    bg3 = pygame.image.load("graphics\\background_layer_3.png")
+    bg3 = pygame.transform.scale(bg3, (width, 1080))
+else:
+    bg1 = pygame.image.load("graphics\\background_layer_3.png")
+    bg1 = pygame.transform.scale(bg1, (width, 1080))
+    bg2 = pygame.image.load("graphics\\background_layer_2.png")
+    bg2 = pygame.transform.scale(bg2, (width, 1080))
+    bg3 = pygame.image.load("graphics\\bg.png")
+    bg3 = pygame.transform.scale(bg3, (width, 1080))
+
 all_sprites = pygame.sprite.Group()
 cursor = pygame.sprite.Sprite(all_sprites)
 cursor.image = pygame.image.load('graphics\\display\\cursor.png')
@@ -161,7 +173,6 @@ while running:
                 # говнокод снизу
                 if event.key == pygame.K_SPACE:
                     level.jump_check()
-
             if player_stats.status == 'start':
                 if event.key == pygame.K_w:
                     start_screen.switch(-1)
@@ -193,15 +204,19 @@ while running:
         time.sleep(2)
         player_stats.status = 'game'
     elif player_stats.status == 'game':
+        # if location.read() == 'town':
         screen.blit(bg1, (0, 0))
         screen.blit(bg2, (0, 0))
         screen.blit(bg3, (0, 0))
+        '''else:
+            bg1 = pygame.image.load("graphics\\bg.png")
+            bg1 = pygame.transform.scale(bg1, (width, 1080))
+            screen.blit(bg1, (0, 0))'''
         level.run()
         if level.open_checkpoint():
             player_stats.status = 'point'
-        if player_stats.hp == 0:
-            print('jojo')
     elif player_stats.status == 'start':
+        music(start_screen_theme)
         start_screen.run(50, 350, 165)
     elif player_stats.status == 'menu':
         pygame.mixer.music.pause()

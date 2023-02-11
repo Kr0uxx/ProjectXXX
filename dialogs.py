@@ -2,9 +2,9 @@ import pygame
 from time import sleep
 
 characters = {
-    'H\n': ['graphics\\portraits\\HeroPortrait.png', 'Hero'],
-    'W\n': ['graphics\\portraits\\Witcher.png', 'Феривий'],
-    'S\n': ['graphics\\portraits\\Shop.png', 'Торговец'],
+    'H\n': ['graphics\\portraits\\hero_portrait.png', 'Hero'],
+    'W\n': ['graphics\\portraits\\wizard.png', 'Феривий'],
+    'S\n': ['graphics\\portraits\\Shopp.png', 'Торговец'],
 }
 
 

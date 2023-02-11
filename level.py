@@ -7,6 +7,7 @@ from checkpoint import CheckPoint
 from checkpoints_display import PointsDisplay
 from random import randint
 from display import Display
+from wizard import Wizard
 
 map1 = open("maps/map1.txt").readlines()
 size_x = 50
@@ -16,7 +17,7 @@ hp = 100
 damage = 5
 up_counter = 0
 jump_state = False
-location = "village"
+location = 'village'
 props = {"T": ["graphics\\props\\village\\tree_2.png", (250, 250)],
          "t": ["graphics\\props\\village\\tree_1.png", (250, 250)],
          "m": ["graphics\\props\\village\\barrel.png", (70, 70)],
@@ -140,6 +141,18 @@ class Platform(pygame.sprite.Sprite):
         elif typ == 'N':
             self.image = pygame.image.load(f'graphics\\tiles\\{location}\\town10.png')
             self.image = pygame.transform.scale(self.image, (self.size, self.size))
+        elif typ == '':
+            self.image = pygame.image.load(f'graphics\\tiles\\{location}\\town11.png')
+            self.image = pygame.transform.scale(self.image, (self.size, self.size))
+        elif typ == 'M':
+            self.image = pygame.image.load(f'graphics\\tiles\\{location}\\town12.png')
+            self.image = pygame.transform.scale(self.image, (self.size, self.size))
+        elif typ == '£':
+            self.image = pygame.image.load(f'graphics\\tiles\\{location}\\town13.png')
+            self.image = pygame.transform.scale(self.image, (self.size, self.size))
+        elif typ == 'Y':
+            self.image = pygame.image.load(f'graphics\\tiles\\{location}\\town14.png')
+            self.image = pygame.transform.scale(self.image, (self.size, self.size))
 
 
 class Props(pygame.sprite.Sprite):
@@ -191,7 +204,9 @@ class Level:
         self.mobs = pygame.sprite.Group()
         self.boss = pygame.sprite.GroupSingle()
         self.shops = pygame.sprite.Group()
+        self.wizard = pygame.sprite.GroupSingle()
         self.checkpoints = pygame.sprite.Group()
+        self.transitions = pygame.sprite.Group()
         self.props = pygame.sprite.Group()
         for ind_r, r in enumerate(map2):
             for ind_c, c in enumerate(r):
@@ -214,7 +229,8 @@ class Level:
                     self.props.add(prop)
                 elif c == "P":
                     # pos = size_x * ind_c, size_x * ind_r
-                    player = Player(pos)
+                    player = Player((size_x * ind_c, size_x * ind_r))
+                    pos = (size_x * ind_c, size_x * ind_r)
                     self.player.add(player)
                     collision = Collision((size_x * ind_c, size_x * ind_r), self.player.sprite)
                     self.collision.add(collision)
@@ -233,11 +249,17 @@ class Level:
                 elif c == 'S':
                     shop = Shop((size_x * ind_c, size_x * ind_r), self.screen)
                     self.shops.add(shop)
+                elif c == 'U':
+                    wizard = Wizard((size_x * ind_c, size_x * ind_r), self.screen)
+                    self.wizard.add(wizard)
                 elif c == 'C':
                     checkpoint = CheckPoint((size_x * ind_c, size_x * ind_r), self.screen)
                     print((size_x * ind_c, size_x * ind_r))
                     self.checkpoints.add(checkpoint)
-
+                '''elif c == 'h':
+                    transition = Transition((size_x * ind_c, size_x * ind_r), self.screen)
+                    print((size_x * ind_c, size_x * ind_r))
+                    self.transitions.add(transition)'''
         return pos
 
     def camera_level(self):
@@ -304,6 +326,16 @@ class Level:
                 if keys[pygame.K_e]:
                     return point.interaction()
 
+    '''def transition_interaction(self):
+        player = self.player.sprite
+        for transition in self.transitions:
+            if pygame.sprite.collide_rect(transition, player):
+                x = transition.pos[0]
+                if transition.transitions[map1, transition.pos] % 2 == 1:
+                    x -= transition.transitions[transition.pos[0]]
+                self.camera_centred(-x)
+                return transition.interaction(player)'''
+
     def shop_collision(self):
         player = self.player.sprite
         for shop in self.shops:
@@ -311,13 +343,23 @@ class Level:
                 self.screen.blit(self.e_key_image, (shop.rect.x + 100, shop.rect.y - 30))
                 keys = pygame.key.get_pressed()
                 if keys[pygame.K_e]:
-                    return shop.interaction()
+                    return shop.interaction(1)
+
+    def wizard_collision(self):
+        player = self.player.sprite
+        wizard = self.wizard.sprite
+        if pygame.sprite.collide_rect(wizard, player):
+            self.screen.blit(self.e_key_image, (wizard.rect.x + 100, wizard.rect.y - 70))
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_e]:
+                return wizard.interaction(2)
 
     def camera_centred(self, x):
         self.platforms.update(x)
         self.moneys.update(x)
         self.mobs.update(x)
         self.shops.update(x)
+        self.wizard.update(x)
         self.checkpoints.update(x)
 
     # the worst code i`ve ever seen
@@ -394,6 +436,10 @@ class Level:
             shop.animate_npc(shop.images, 6, False, (250, 250))
         self.shops.update(self.camera)
         self.shops.draw(self.screen)
+        wizard = self.wizard.sprite
+        wizard.animate_npc(wizard.images, 14, False, (250, 300))
+        self.wizard.update(self.camera)
+        self.wizard.draw(self.screen)
 
         # 4 слой - игрок
         self.player.update()
@@ -412,6 +458,7 @@ class Level:
                 self.player.sprite.status = 'stand'
         # 5 слой - функции
         self.shop_collision()
+        self.wizard_collision()
         self.get_money()
         self.open_checkpoint()
         self.enemy_attack()

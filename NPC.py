@@ -12,11 +12,13 @@ class NPC(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(self.image, (250, 250))
         self.rect = self.image.get_rect(topleft=pos)
         self.vector = pygame.math.Vector2(0, 0)
-        self.active_dialog = 0
+        self.dialog_hash = 0
+        self.current_dialog = 1
 
-    def interaction(self):
+    def interaction(self, replicas):
         dialog = Dialog(self.screen)
-        dialog.play(str(self.active_dialog) + '01', 1)
+        dialog.play(str(self.dialog_hash) + '0' + str(self.current_dialog), replicas)
+        self.current_dialog += 1
 
     def animate_npc(self, sheet, num, flip, size):
         if self.delay == 2:
