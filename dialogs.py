@@ -21,6 +21,7 @@ class Dialog:
         self.path = ''
         self.lever = False
         self.replicas = 0
+        self.sleep_time = 0.08
 
     def load_dialog(self, dialog):
         return f'dialogs\\dialog-{dialog}\\replica-'
@@ -31,6 +32,7 @@ class Dialog:
         if keys[pygame.K_e]:
             self.lever = False
             self.replicas += 1
+        # if keys[pygame.K_q]:
 
     def play(self, dialog, replica_count):
         self.replicas = 1
@@ -55,7 +57,7 @@ class Dialog:
                         self.screen.blit(portrait, (88, 837))
                         self.screen.blit(write, (300 + 15 * countx, 830 + self.county * 30))
                         pygame.display.flip()
-                        sleep(0.08)
+                        sleep(self.sleep_time)
                 self.lever = True
                 sleep(2)
             else:

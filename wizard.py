@@ -10,3 +10,5 @@ class Wizard(NPC):
         self.current_dialog = 1
         self.images = [pygame.image.load(f'graphics\\Characters\\wizard\\frame-{i + 1}.png') for i in range(14)]
         self.animate_npc(self.images, 6, False, (250, 300))
+
+

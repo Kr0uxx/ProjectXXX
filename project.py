@@ -105,7 +105,6 @@ def load_game():
     player = player_sprite.sprite
     active = open('system files/active_checkpoint').read()
     x, y = checkpoints2[active][0], checkpoints2[active][1] + 200
-    print(x, 0 - x - 1200)
     level.camera_centred(-x)
 
 
@@ -178,21 +177,21 @@ while running:
                 # говнокод снизу
                 if event.key == pygame.K_SPACE:
                     level.jump_check()
-            if player_stats.status == 'start':
+            elif player_stats.status == 'start':
                 if event.key == pygame.K_w:
                     start_screen.switch(-1)
                 elif event.key == pygame.K_s:
                     start_screen.switch(1)
                 elif event.key == pygame.K_RETURN:
                     start_screen.select()
-            if player_stats.status == 'menu':
+            elif player_stats.status == 'menu':
                 if event.key == pygame.K_w:
                     menu.switch(-1)
                 elif event.key == pygame.K_s:
                     menu.switch(1)
                 elif event.key == pygame.K_RETURN:
                     menu.select()
-            if player_stats.status == 'point':
+            elif player_stats.status == 'point':
                 if event.key == pygame.K_ESCAPE:
                     player_stats.status = 'game'
                 elif event.key == pygame.K_w:
