@@ -141,13 +141,13 @@ class Platform(pygame.sprite.Sprite):
         elif typ == 'N':
             self.image = pygame.image.load(f'graphics\\tiles\\{location}\\town10.png')
             self.image = pygame.transform.scale(self.image, (self.size, self.size))
-        elif typ == '':
+        elif typ == 'p':
             self.image = pygame.image.load(f'graphics\\tiles\\{location}\\town11.png')
             self.image = pygame.transform.scale(self.image, (self.size, self.size))
-        elif typ == 'M':
+        elif typ == 'u':
             self.image = pygame.image.load(f'graphics\\tiles\\{location}\\town12.png')
             self.image = pygame.transform.scale(self.image, (self.size, self.size))
-        elif typ == '£':
+        elif typ == '_':
             self.image = pygame.image.load(f'graphics\\tiles\\{location}\\town13.png')
             self.image = pygame.transform.scale(self.image, (self.size, self.size))
         elif typ == 'Y':
@@ -211,7 +211,7 @@ class Level:
         for ind_r, r in enumerate(map2):
             for ind_c, c in enumerate(r):
                 if c == "X" or c == "L" or c == "R" or c == "Z" or c == "I" or c == "J" or c == "A" \
-                        or c == "D" or c == "H" or c == "N":
+                        or c == "D" or c == "H" or c == "N" or c == "p" or c == 'u' or c == '_' or c == 'Y':
                     platform = Platform((size_x * ind_c, size_x * ind_r), size_x)
                     platform.type(c)
                     self.platforms.add(platform)
@@ -352,10 +352,11 @@ class Level:
             self.screen.blit(self.e_key_image, (wizard.rect.x + 100, wizard.rect.y - 70))
             keys = pygame.key.get_pressed()
             if keys[pygame.K_e]:
-                return wizard.interaction(2)
+                return wizard.interaction(6)
 
     def camera_centred(self, x):
         self.platforms.update(x)
+        self.props.update(x)
         self.moneys.update(x)
         self.mobs.update(x)
         self.shops.update(x)
@@ -463,6 +464,7 @@ class Level:
         self.open_checkpoint()
         self.enemy_attack()
         self.check_enemy()
-
+        player = self.player.sprite
+        print(player.rect.x)
         # 6 слой дисплей
         self.display.run()

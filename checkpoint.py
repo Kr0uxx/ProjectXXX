@@ -1,8 +1,9 @@
 import pygame
 from checkpoints_display import PointsDisplay
 
-checkpoints = {(600, 450): '1',
-               (3500, 500): '2'}
+checkpoints = {(2050, 500): '1',
+               (5300, 500): '2'
+               }
 
 
 class CheckPoint(pygame.sprite.Sprite):

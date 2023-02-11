@@ -55,10 +55,14 @@ player = Player(level.read(active_map))
 player_sprite = pygame.sprite.GroupSingle()
 player_sprite.add(player)
 
-checkpoints = {(600, 450): '1 ',
-               (3500, 500): '2 '}
-checkpoints2 = {'1 ': (600, 450),
-                '2 ': (3500, 500)}
+checkpoints = {(2050, 500): '1',
+               (5300, 500): '2',
+               (7800, 500): '3'
+               }
+checkpoints2 = {'1 ': (2050, 500),
+                '2 ': (5300, 500),
+                '3 ': (7800, 500)
+                }
 
 
 def teleport():
@@ -101,7 +105,7 @@ def load_game():
     player = player_sprite.sprite
     active = open('system files/active_checkpoint').read()
     x, y = checkpoints2[active][0], checkpoints2[active][1] + 200
-    print(x, 0 - x)
+    print(x, 0 - x - 1200)
     level.camera_centred(-x)
 
 
