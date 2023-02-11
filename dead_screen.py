@@ -8,7 +8,6 @@ class DeadScreen:
         self.image.fill('black')
 
     def run(self):
-
         self.screen.blit(self.image, (0, 0))
         f = pygame.font.SysFont('Serif', 200)
         text = f.render('YOU DIED', True, (84, 46, 42))

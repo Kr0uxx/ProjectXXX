@@ -6,8 +6,9 @@ from menu import Menu
 from start_screen import StartScreen
 from dead_screen import DeadScreen
 from player import PlayerStats, Player
-from dialogs import dialogs
+from dialogs import Dialog
 from checkpoints_display import PointsDisplay
+from levels_display import LvlDisplay
 
 pygame.init()
 running = True
@@ -18,6 +19,9 @@ status = 'start'
 
 # карта для уровня
 map1 = open("maps/map1.txt").readlines()
+map2 = open("maps/map2.txt").readlines()
+map3 = open("maps/map1.txt").readlines()
+map_boss = open("maps/map_boss").readlines()
 active_map = map1
 
 # музыка
@@ -33,20 +37,21 @@ def music(music_name, volume=0.3, loops=-1):
 
 music(start_screen_theme)
 size_x = 50
-width = 1500
-height = len(map1) * size_x
+width = 1920
+height = 1080
 damage = 5
 
 size = width, height
-screen = pygame.display.set_mode(size)
+screen = pygame.display.set_mode(size, pygame.FULLSCREEN)
 clock = pygame.time.Clock()
 player_stats = PlayerStats(status, 1000, 1000, damage)
-level = Level(map1, screen, player_stats.status)
-
+level = Level(active_map, screen, player_stats.status)
+location = 'village'
 display = Display(screen, width, player_stats.hp, player_stats.mana)
+dialog = Dialog(screen)
 
 # игрок
-player = Player(level.read(map1))
+player = Player(level.read(active_map))
 player_sprite = pygame.sprite.GroupSingle()
 player_sprite.add(player)
 
@@ -79,7 +84,7 @@ def quit_game():
 
 
 def resume_game():
-    music(main_theme)
+    pygame.mixer.music.unpause()
     player_stats.status = 'game'
 
 
@@ -97,7 +102,6 @@ def load_game():
     active = open('system files/active_checkpoint').read()
     x, y = checkpoints2[active][0], checkpoints2[active][1] + 200
     print(x, 0 - x)
-    level.camera_centred(x)
     level.camera_centred(-x)
 
 
@@ -130,12 +134,21 @@ dead_screen = DeadScreen(screen)
 points_display = PointsDisplay(screen)
 
 # графика
-bg1 = pygame.image.load("graphics\\background_layer_1.png")
-bg1 = pygame.transform.scale(bg1, (width, 1080))
-bg2 = pygame.image.load("graphics\\background_layer_2.png")
-bg2 = pygame.transform.scale(bg2, (width, 1080))
-bg3 = pygame.image.load("graphics\\background_layer_3.png")
-bg3 = pygame.transform.scale(bg3, (width, 1080))
+if location == 'town':
+    bg1 = pygame.image.load("graphics\\background_layer_1.png")
+    bg1 = pygame.transform.scale(bg1, (width, 1080))
+    bg2 = pygame.image.load("graphics\\background_layer_2.png")
+    bg2 = pygame.transform.scale(bg2, (width, 1080))
+    bg3 = pygame.image.load("graphics\\background_layer_3.png")
+    bg3 = pygame.transform.scale(bg3, (width, 1080))
+else:
+    bg1 = pygame.image.load("graphics\\background_layer_3.png")
+    bg1 = pygame.transform.scale(bg1, (width, 1080))
+    bg2 = pygame.image.load("graphics\\background_layer_2.png")
+    bg2 = pygame.transform.scale(bg2, (width, 1080))
+    bg3 = pygame.image.load("graphics\\bg.png")
+    bg3 = pygame.transform.scale(bg3, (width, 1080))
+
 all_sprites = pygame.sprite.Group()
 cursor = pygame.sprite.Sprite(all_sprites)
 cursor.image = pygame.image.load('graphics\\display\\cursor.png')
@@ -148,25 +161,34 @@ while running:
             running = False
         if event.type == pygame.MOUSEMOTION:
             cursor.rect.topleft = event.pos
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if player_stats.status == 'game':
+                if event.button == 1:
+                    pygame.mixer.Sound('music\\sounds\\attack_sound.mp3').play()
+                    level.player.sprite.status = 'attack'
+                    level.enemy_hurt()
         if event.type == pygame.KEYDOWN:
             if player_stats.status == 'game':
                 if event.key == pygame.K_ESCAPE:
                     player_stats.status = 'menu'
-            elif player_stats.status == 'start':
+                # говнокод снизу
+                if event.key == pygame.K_SPACE:
+                    level.jump_check()
+            if player_stats.status == 'start':
                 if event.key == pygame.K_w:
                     start_screen.switch(-1)
                 elif event.key == pygame.K_s:
                     start_screen.switch(1)
                 elif event.key == pygame.K_RETURN:
                     start_screen.select()
-            elif player_stats.status == 'menu':
+            if player_stats.status == 'menu':
                 if event.key == pygame.K_w:
                     menu.switch(-1)
                 elif event.key == pygame.K_s:
                     menu.switch(1)
                 elif event.key == pygame.K_RETURN:
                     menu.select()
-            elif player_stats.status == 'point':
+            if player_stats.status == 'point':
                 if event.key == pygame.K_ESCAPE:
                     player_stats.status = 'game'
                 elif event.key == pygame.K_w:
@@ -175,35 +197,37 @@ while running:
                     points_display.switch(1)
                 elif event.key == pygame.K_RETURN:
                     points_display.select()
-            if event.key == pygame.K_y:
-                player_stats.get_damage(10)
-                display.hp_subtraction(10)
-            if event.key == pygame.K_q:
-                player_stats.status = 'dialog'
     if player_stats.status == 'death':
         pygame.mixer.music.stop()
         dead_screen.run()
+    elif player_stats.status == 'dialog':
+        dialog.play(101, 2)
+        time.sleep(2)
+        player_stats.status = 'game'
     elif player_stats.status == 'game':
+        # if location.read() == 'town':
         screen.blit(bg1, (0, 0))
         screen.blit(bg2, (0, 0))
         screen.blit(bg3, (0, 0))
+        '''else:
+            bg1 = pygame.image.load("graphics\\bg.png")
+            bg1 = pygame.transform.scale(bg1, (width, 1080))
+            screen.blit(bg1, (0, 0))'''
         level.run()
         if level.open_checkpoint():
             player_stats.status = 'point'
-        display.run()
     elif player_stats.status == 'start':
+        music(start_screen_theme)
         start_screen.run(50, 350, 165)
     elif player_stats.status == 'menu':
+        pygame.mixer.music.pause()
         menu.run(50, 350, 165)
-    elif player_stats.status == 'dialog':
-        dialogs(screen, 'dialogs\\dialog001\\dialog1')
-        time.sleep(2)
-        player_stats.status = 'game'
     elif player_stats.status == 'point':
         points_display.run(50, 350, 165)
         points_display.append_option(teleport)
-    if pygame.mouse.get_focused():
-        all_sprites.draw(screen)
+    if player_stats.status != 'game':
+        if pygame.mouse.get_focused():
+            all_sprites.draw(screen)
     pygame.display.flip()
-    clock.tick(60)
+    clock.tick(144)
 pygame.quit()

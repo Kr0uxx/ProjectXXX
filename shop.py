@@ -1,14 +1,19 @@
 import pygame
+from NPC import NPC
+from dialogs import Dialog
 
 
-class Shop(pygame.sprite.Sprite):
-    def __init__(self, pos):
-        super().__init__()
-        self.image = pygame.image.load('graphics\\Characters\\Shop\\shop.png')
-        self.image = pygame.transform.scale(self.image, (250, 250))
-        self.rect = self.image.get_rect(topleft=pos)
-        self.vector = pygame.math.Vector2(0, 0)
-        self.v = 5
+class Shop(NPC):
+    def __init__(self, pos, screen):
+        super().__init__(pos, screen)
+        self.image = pygame.Surface((250, 250))
+        self.dialog_hash = 2
+        self.images = [pygame.image.load(f'graphics\\Characters\\Shop\\frame-0{i + 1}.png') for i in range(6)]
+        self.animate_npc(self.images, 6, False, (250, 250))
 
-    def update(self, shift):
-        self.rect.x += shift
+    def interaction(self, replicas):
+        dialog = Dialog(self.screen)
+        dialog.play(str(self.dialog_hash) + '01', replicas)
+
+    # def display(self):
+
