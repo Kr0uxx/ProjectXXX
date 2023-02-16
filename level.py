@@ -408,10 +408,10 @@ class Level:
             if not pygame.sprite.collide_rect(mob, self.collision.sprite):
                 if mob.x_pos + 60 <= mob.step_counter:
                     mob.v = -3
-                    mob.image = pygame.transform.flip(mob.image, True, False)
+                    mob.flip = not mob.flip
                 if mob.x_pos - 60 >= mob.step_counter:
                     mob.v = 3
-                    mob.image = pygame.transform.flip(mob.image, True, False)
+                    mob.flip = not mob.flip
                 mob.rect.x += mob.v
                 mob.step_counter += mob.v
 
@@ -431,6 +431,8 @@ class Level:
         self.checkpoints.draw(self.screen)
         # 3 слой мобы, нпс
         self.mobs.update(self.camera)
+        for mob in self.mobs:
+            mob.animate_mob(mob.images, 8, (100, 100), mob.flip)
         self.mobs.draw(self.screen)
         self.boss.draw(self.screen)
         for shop in self.shops:
