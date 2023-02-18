@@ -3,8 +3,8 @@ from time import sleep
 
 characters = {
     'H\n': ['graphics\\portraits\\hero_portrait.png', 'Hero'],
-    'W\n': ['graphics\\portraits\\wizard.png', 'Феривий'],
-    'S\n': ['graphics\\portraits\\Shopp.png', 'Торговец'],
+    'W\n': ['graphics\\portraits\\wizard.png', 'Ferivius'],
+    'S\n': ['graphics\\portraits\\Shopp.png', 'Dealer'],
 }
 
 
