@@ -34,4 +34,4 @@ location - файл с текущей локацией, по идее из ко�
 
 
 P.S. Сам не знаю откуда у нас в используемых языках html, javascript и C
-![0d9633ee82ada2d4f52af288bb07de1b](https://user-images.githubusercontent.com/74461517/219830700-823563c6-b814-4964-ac95-ca983af13de6.gif)
+![tokyo-ghoul](https://user-images.githubusercontent.com/74461517/219830777-54d813f2-7c44-4580-ba37-c5ffcbf8aaca.gif)
