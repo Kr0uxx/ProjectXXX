@@ -31,6 +31,7 @@ location - файл с текущей локацией, по идее из ко�
 
 # Презентация + ТЗ
 ссылка(ТЗ - 3 слайд): https://docs.google.com/presentation/d/1J1LSYnkhvGQfonWoFZ35S9eeA9A4vq6DR42XwpNNvWY/edit#slide=id.g1894845655c_0_170
-![0d9633ee82ada2d4f52af288bb07de1b](https://user-images.githubusercontent.com/74461517/219830700-823563c6-b814-4964-ac95-ca983af13de6.gif)
+
 
 P.S. Сам не знаю откуда у нас в используемых языках html, javascript и C
+![0d9633ee82ada2d4f52af288bb07de1b](https://user-images.githubusercontent.com/74461517/219830700-823563c6-b814-4964-ac95-ca983af13de6.gif)
