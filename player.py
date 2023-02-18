@@ -99,7 +99,6 @@ class Player(pygame.sprite.Sprite):
     def attack(self, mob):
         pygame.mixer.Sound('music\\sounds\\mob_hurt_sound.wav').play()
         mob.health -= self.damage
-        print("enemy health:", mob.health)
 
     def update(self):
         self.get_key()

@@ -8,7 +8,6 @@ from dead_screen import DeadScreen
 from player import PlayerStats, Player
 from dialogs import Dialog
 from checkpoints_display import PointsDisplay
-from levels_display import LvlDisplay
 
 pygame.init()
 running = True
@@ -73,7 +72,7 @@ def teleport():
     minus = checkpoints2[active][0]
     y = points_display.coordinates[points_display.current_option_index][1]
     with open("system files/active_checkpoint", "wt", encoding="utf8") as to_active_point:
-        to_active_point.write(checkpoints[x, y])
+        to_active_point.write(checkpoints[x, y] + ' ')
     x -= minus
     y += 200
     level.camera_centred(-x)
@@ -104,7 +103,7 @@ def load_game():
     global player
     player = player_sprite.sprite
     active = open('system files/active_checkpoint').read()
-    x, y = checkpoints2[active][0], checkpoints2[active][1] + 200
+    x, y = checkpoints2[active][0] - 1200, checkpoints2[active][1] + 200
     level.camera_centred(-x)
 
 

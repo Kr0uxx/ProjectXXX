@@ -110,7 +110,6 @@ class Platform(pygame.sprite.Sprite):
 
     def type(self, typ):
         global location
-        # тут лучше потом переделать хранение через словарь))
         if typ == 'X':
             self.image = pygame.image.load(f'graphics\\tiles\\{location}\\town01.png')
             self.image = pygame.transform.scale(self.image, (self.size, self.size))
@@ -465,6 +464,5 @@ class Level:
         self.enemy_attack()
         self.check_enemy()
         player = self.player.sprite
-        print(player.rect.x)
         # 6 слой дисплей
         self.display.run()

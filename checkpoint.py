@@ -2,7 +2,8 @@ import pygame
 from checkpoints_display import PointsDisplay
 
 checkpoints = {(2050, 500): '1',
-               (5300, 500): '2'
+               (5300, 500): '2',
+               (7800, 500): '3'
                }
 
 

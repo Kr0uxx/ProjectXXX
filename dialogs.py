@@ -26,13 +26,11 @@ class Dialog:
     def load_dialog(self, dialog):
         return f'dialogs\\dialog-{dialog}\\replica-'
 
-    # функция для перехода к следующей реплике по нажатию клавиши, не работает обработка
     def get_key(self):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_e]:
             self.lever = False
             self.replicas += 1
-        # if keys[pygame.K_q]:
 
     def play(self, dialog, replica_count):
         self.replicas = 1
