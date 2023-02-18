@@ -33,7 +33,7 @@ class StartScreen:
         self.layer10 = pygame.transform.scale(self.layer10, (width, 1380))
         self.layer11 = pygame.image.load("graphics\\Layer_0000_9.png")
         self.layer11 = pygame.transform.scale(self.layer11, (width, 1380))
-        self.music = 'music\\start screen theme.mp3'
+        self.music = 'music\\main theme.mp3'
         self.screen = screen
 
     def append_option(self, option, callback):

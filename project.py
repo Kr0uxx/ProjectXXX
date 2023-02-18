@@ -19,7 +19,7 @@ status = 'start'
 # карта для уровня
 map1 = open("maps/map1.txt").readlines()
 map2 = open("maps/map2.txt").readlines()
-map3 = open("maps/map1.txt").readlines()
+map3 = open("maps/map3.txt").readlines()
 map_boss = open("maps/map_boss").readlines()
 active_map = map1
 
@@ -89,13 +89,15 @@ def quit_game():
 def resume_game():
     pygame.mixer.music.unpause()
     player_stats.status = 'game'
+    music(main_theme)
 
 
 def start_game():
     with open('system files/checkpoints_list', 'r+') as file:
-        file.truncate()
+        file.write('')
         file.close()
     player_stats.status = 'game'
+
 
 
 def load_game():
@@ -157,6 +159,7 @@ cursor.image = pygame.image.load('graphics\\display\\cursor.png')
 cursor.image = pygame.transform.scale(cursor.image, (20, 30))
 cursor.rect = cursor.image.get_rect()
 pygame.mouse.set_visible(False)
+
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -207,19 +210,14 @@ while running:
         time.sleep(2)
         player_stats.status = 'game'
     elif player_stats.status == 'game':
-        # if location.read() == 'town':
         screen.blit(bg1, (0, 0))
         screen.blit(bg2, (0, 0))
         screen.blit(bg3, (0, 0))
-        '''else:
-            bg1 = pygame.image.load("graphics\\bg.png")
-            bg1 = pygame.transform.scale(bg1, (width, 1080))
-            screen.blit(bg1, (0, 0))'''
         level.run()
         if level.open_checkpoint():
             player_stats.status = 'point'
     elif player_stats.status == 'start':
-        music(start_screen_theme)
+        music(main_theme)
         start_screen.run(50, 350, 165)
     elif player_stats.status == 'menu':
         pygame.mixer.music.pause()
